@@ -1,0 +1,46 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.kotlin_version = '1.3.70'
+    repositories {
+        google()
+        jcenter()
+        
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+plugins {
+    id "io.gitlab.arturbosch.detekt" version "1.0.0"
+}
+
+// CI doesn't benefit from pre-dex
+project.ext.preDexLibs = !project.hasProperty('disablePreDex')
+
+subprojects {
+    project.plugins.whenPluginAdded { plugin ->
+        if ("com.android.build.gradle.AppPlugin" == plugin.class.name) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        } else if ("com.android.build.gradle.LibraryPlugin" == plugin.class.name) {
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        }
+    }
+}
+
+allprojects {
+    apply from: "$rootDir/detekt.gradle"
+    repositories {
+        google()
+        jcenter()
+        
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

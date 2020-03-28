@@ -1,0 +1,21 @@
+# IntelliJ IDEA
+.idea
+*.iml
+/.idea/workspace.xml
+/.idea/libraries
+
+# Gradle
+.gradle
+gradlew.bat
+local.properties
+/local.properties
+build
+/build
+/captures
+reports
+
+# Apple
+.DS_Store
+
+# Production Keystore
+certs/silvercar.keystore

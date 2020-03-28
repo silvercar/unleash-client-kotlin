@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  detekt:
+    docker:
+    - image: circleci/android:api-29
+    steps:
+    - checkout
+    - restore_cache:
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "sample/build.gradle" }}
+    - run:
+        name: Download Dependencies
+        command: ./gradlew androidDependencies
+    - save_cache:
+        paths:
+        - ~/.gradle
+        key: jars-{{ checksum "build.gradle" }}-{{ checksum  "sample/build.gradle" }}
+    - run: ./gradlew detekt
+
+  buildSample:
+    docker:
+      - image: circleci/android:api-29
+    steps:
+      - checkout
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "sample/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "sample/build.gradle" }}
+      - run: ./gradlew clean test assembleRelease
+      - store-artifacts:
+          path: sample/build/outputs/apk/release/sample-release.apk
+
+workflows:
+  version: 2
+  unleash-workflow:
+    jobs:
+      - detekt
+      - buildSample:
+          requires:
+            - detekt
