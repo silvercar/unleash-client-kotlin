@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Unleash</string>
-    <string name="hello_world">Hello World!</string>
+    <string name="unleash_test_android_enabled_formatted">Unleash test-android is enabled: %b</string>
 </resources>
