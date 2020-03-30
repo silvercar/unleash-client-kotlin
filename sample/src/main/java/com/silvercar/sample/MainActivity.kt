@@ -20,58 +20,60 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var unleash: Unleash
-    private lateinit var unleashEnabled: TextView
+  private lateinit var unleash: Unleash
+  private lateinit var unleashEnabled: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
 
-        setSupportActionBar(findViewById(R.id.toolbar))
+    setSupportActionBar(findViewById(R.id.toolbar))
 
-        supportActionBar?.let { setTitle(R.string.app_name) }
+    supportActionBar?.let { setTitle(R.string.app_name) }
 
-        unleashEnabled = findViewById(R.id.unleashEnabled)
+    unleashEnabled = findViewById(R.id.unleashEnabled)
 
-        GlobalScope.launch {
-            unleash = initUnleash()
-            val isEnabled = unleash.isEnabled("test-android")
-            unleashEnabled.text = getString(R.string.unleash_test_android_enabled_formatted,
-                isEnabled)
-        }
+    GlobalScope.launch {
+      unleash = initUnleash()
+      val isEnabled = unleash.isEnabled("test-android")
+      unleashEnabled.text = getString(
+        R.string.unleash_test_android_enabled_formatted,
+        isEnabled
+      )
     }
+  }
 
-    private suspend fun initUnleash(): Unleash {
-        lateinit var unleash: Unleash
+  private suspend fun initUnleash(): Unleash {
+    lateinit var unleash: Unleash
 
-        return withContext(Dispatchers.IO) {
-            suspendCoroutine<Unleash> { coroutine ->
-                val config: UnleashConfig = UnleashConfig.builder()
-                    .appName(application.packageName)
-                    .unleashAPI("https://unleash.silvercar.com/api")
-                    .fetchTogglesInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
-                    .sendMetricsInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
-                    .subscriber(object : UnleashSubscriber {
-                        override fun onReady(ready: UnleashReady?) {
-                            Timber.d("Unleash is ready")
-                            coroutine.resume(unleash)
-                        }
-
-                        override fun togglesFetched(toggleResponse: FeatureToggleResponse?) {
-                            toggleResponse?.let { Timber.d("Fetch toggles with status: %s", it.status) }
-                        }
-
-                        override fun togglesBackedUp(toggleCollection: ToggleCollection?) {
-                            Timber.d("Backup stored.")
-                        }
-                    })
-                    .build()
-                unleash = DefaultUnleash(config, EnvironmentStrategy())
+    return withContext(Dispatchers.IO) {
+      suspendCoroutine<Unleash> { coroutine ->
+        val config: UnleashConfig = UnleashConfig.builder()
+          .appName(application.packageName)
+          .unleashAPI("https://unleash.silvercar.com/api")
+          .fetchTogglesInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
+          .sendMetricsInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
+          .subscriber(object : UnleashSubscriber {
+            override fun onReady(ready: UnleashReady?) {
+              Timber.d("Unleash is ready")
+              coroutine.resume(unleash)
             }
-        }
-    }
 
-    private companion object {
-        const val INTERVAL: Long = 60
+            override fun togglesFetched(toggleResponse: FeatureToggleResponse?) {
+              toggleResponse?.let { Timber.d("Fetch toggles with status: %s", it.status) }
+            }
+
+            override fun togglesBackedUp(toggleCollection: ToggleCollection?) {
+              Timber.d("Backup stored.")
+            }
+          })
+          .build()
+        unleash = DefaultUnleash(config, EnvironmentStrategy())
+      }
     }
+  }
+
+  private companion object {
+    const val INTERVAL: Long = 60
+  }
 }
