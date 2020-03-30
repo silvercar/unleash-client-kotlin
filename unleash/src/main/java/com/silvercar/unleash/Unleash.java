@@ -1,7 +1,7 @@
 package com.silvercar.unleash;
 
 import java.util.List;
-import java.util.function.BiFunction;
+import com.annimon.stream.function.BiFunction;
 
 public interface Unleash {
     boolean isEnabled(String toggleName);

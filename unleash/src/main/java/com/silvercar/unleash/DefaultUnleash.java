@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import com.annimon.stream.Optional;
 import com.annimon.stream.Stream;
+import com.annimon.stream.function.BiFunction;
 import com.silvercar.unleash.event.EventDispatcher;
 import com.silvercar.unleash.event.ToggleEvaluated;
 import com.silvercar.unleash.metric.UnleashMetricService;

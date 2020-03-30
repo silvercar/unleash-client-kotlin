@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import com.annimon.stream.Optional;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
+import com.annimon.stream.function.BiFunction;
 
 import com.silvercar.unleash.repository.ToggleRepository;
 import com.silvercar.unleash.strategy.Strategy;
