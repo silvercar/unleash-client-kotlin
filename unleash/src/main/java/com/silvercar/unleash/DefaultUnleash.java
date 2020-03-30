@@ -17,10 +17,10 @@ import com.silvercar.unleash.repository.ToggleBackupHandlerFile;
 import com.silvercar.unleash.repository.ToggleRepository;
 import com.silvercar.unleash.strategy.*;
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.variant.VariantUtil;
 
 import static java.util.Optional.ofNullable;
 import static com.silvercar.unleash.Variant.DISABLED_VARIANT;
-import static com.silvercar.unleash.variant.VariantUtil.selectVariant;
 
 public final class DefaultUnleash implements Unleash {
     private static final List<Strategy> BUILTIN_STRATEGIES = Arrays.asList(new DefaultStrategy(),
@@ -118,7 +118,7 @@ public final class DefaultUnleash implements Unleash {
     public Variant getVariant(String toggleName, UnleashContext context, Variant defaultValue) {
         FeatureToggle featureToggle = toggleRepository.getToggle(toggleName);
         boolean enabled = checkEnabled(toggleName, context, (n, c) -> false);
-        Variant variant = enabled ? selectVariant(featureToggle, context, defaultValue) : defaultValue;
+        Variant variant = enabled ? new VariantUtil().selectVariant(featureToggle, context, defaultValue) : defaultValue;
         metricService.countVariant(toggleName, variant.getName());
         return variant;
     }

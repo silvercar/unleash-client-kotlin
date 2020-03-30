@@ -96,11 +96,13 @@ public class ClientSpecificationTest {
         // Required because the client is available before it may have had the chance to talk with the API
         String backupFile = writeUnleashBackup(testDefinition);
 
+        // TODO: Determine why fetch interval causes tests to fail when debugging.
         // Set-up a unleash instance, using mocked API and backup-file
         UnleashConfig config = UnleashConfig.builder()
                 .appName(testDefinition.getName())
                 .unleashAPI(new URI("http://localhost:" + serverMock.port() + "/api/"))
                 .synchronousFetchOnInitialisation(true)
+                .fetchTogglesInterval(1_000_000) // test fail
                 .backupFile(backupFile)
                 .build();
 
