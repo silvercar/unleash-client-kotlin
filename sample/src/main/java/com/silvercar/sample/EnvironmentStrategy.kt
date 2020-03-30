@@ -1,6 +1,6 @@
 package com.silvercar.sample
 
-import no.finn.unleash.strategy.Strategy
+import com.silvercar.unleash.strategy.Strategy
 
 class EnvironmentStrategy : Strategy {
   override fun isEnabled(parameters: MutableMap<String, String>?): Boolean {
