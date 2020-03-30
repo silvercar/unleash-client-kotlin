@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     unleashEnabled = findViewById(R.id.unleashEnabled)
 
-    GlobalScope.launch {
+    GlobalScope.launch(Dispatchers.Main) {
       unleash = initUnleash()
       val isEnabled = unleash.isEnabled("test-android")
       unleashEnabled.text = getString(
