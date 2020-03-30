@@ -1,13 +1,15 @@
 package com.silvercar.unleash.variant;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.Predicate;
 import com.silvercar.unleash.FeatureToggle;
 import com.silvercar.unleash.UnleashContext;
 import com.silvercar.unleash.Variant;
 import com.silvercar.unleash.strategy.StrategyUtils;
+
+import java.util.List;
+
+import com.annimon.stream.Optional;
 
 public final class VariantUtil {
     // Utility class
@@ -35,8 +37,8 @@ public final class VariantUtil {
     }
 
     private static Optional<VariantDefinition> getOverride(List<VariantDefinition> variants, UnleashContext context) {
-        return variants.stream()
-                .filter(variant -> variant.getOverrides().stream().anyMatch(overrideMatchesContext(context)))
+        return Stream.of(variants)
+                .filter(variant -> Stream.of(variant.getOverrides()).anyMatch(overrideMatchesContext(context)))
                 .findFirst();
     }
 
@@ -49,7 +51,7 @@ public final class VariantUtil {
 
     public static Variant selectVariant(FeatureToggle featureToggle, UnleashContext context, Variant defaultVariant) {
         List<VariantDefinition> variants = featureToggle.getVariants();
-        int totalWeight = variants.stream().mapToInt(VariantDefinition::getWeight).sum();
+        int totalWeight = Stream.of(variants).mapToInt(VariantDefinition::getWeight).sum();
         if(totalWeight == 0) {
             return defaultVariant;
         }

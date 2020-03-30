@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java8.util.Optional;
+import com.annimon.stream.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 

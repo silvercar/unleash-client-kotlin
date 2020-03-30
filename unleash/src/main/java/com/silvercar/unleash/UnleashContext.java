@@ -2,7 +2,7 @@ package com.silvercar.unleash;
 
 import java.util.HashMap;
 import java.util.Map;
-import java8.util.Optional;
+import com.annimon.stream.Optional;
 
 import com.silvercar.unleash.util.UnleashConfig;
 

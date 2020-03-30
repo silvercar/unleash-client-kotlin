@@ -1,13 +1,14 @@
 package com.silvercar.unleash.strategy;
 
+import com.annimon.stream.Stream;
 import com.silvercar.unleash.UnleashContext;
 import com.silvercar.unleash.util.IpAddressMatcher;
 
 import java.util.Arrays;
 import java.util.Map;
-import java8.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
+
+import com.annimon.stream.Optional;
 
 public final class RemoteAddressStrategy implements Strategy {
     static final String PARAM = "IPs";
@@ -28,7 +29,7 @@ public final class RemoteAddressStrategy implements Strategy {
     public boolean isEnabled(Map<String, String> parameters, UnleashContext context) {
         return Optional.ofNullable(parameters.get(PARAM))
                 .map(ips -> Arrays.asList(SPLITTER.split(ips, -1)))
-                .map(ips -> ips.stream()
+                .map(ips -> Stream.of(ips)
                         .flatMap(ipAddress -> buildIpAddressMatcher(ipAddress)
                                 .map(Stream::of)
                                 .orElseGet(Stream::empty))

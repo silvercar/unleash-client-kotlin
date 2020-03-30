@@ -1,7 +1,7 @@
 package com.silvercar.unleash;
 
 import java.util.Objects;
-import java8.util.Optional;
+import com.annimon.stream.Optional;
 
 import com.silvercar.unleash.variant.Payload;
 

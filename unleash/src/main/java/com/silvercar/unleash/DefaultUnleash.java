@@ -4,9 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java8.util.Optional;
 import java.util.function.BiFunction;
 
+import com.annimon.stream.Optional;
+import com.annimon.stream.Stream;
 import com.silvercar.unleash.event.EventDispatcher;
 import com.silvercar.unleash.event.ToggleEvaluated;
 import com.silvercar.unleash.metric.UnleashMetricService;
@@ -102,7 +103,7 @@ public final class DefaultUnleash implements Unleash {
         } else if(featureToggle.getStrategies().size() == 0) {
             return true;
         } else {
-            enabled = featureToggle.getStrategies().stream()
+            enabled = Stream.of(featureToggle.getStrategies())
                     .anyMatch(as -> getStrategy(as.getName()).isEnabled(as.getParameters(), enhancedContext, as.getConstraints()));
         }
         return enabled;

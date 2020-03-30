@@ -1,8 +1,9 @@
 package com.silvercar.unleash.strategy;
 
 import java.util.List;
-import java8.util.Optional;
+import com.annimon.stream.Optional;
 
+import com.annimon.stream.Stream;
 import com.silvercar.unleash.Constraint;
 import com.silvercar.unleash.Operator;
 import com.silvercar.unleash.UnleashContext;
@@ -11,7 +12,7 @@ public class ConstraintUtil {
 
     public static boolean validate(List<Constraint> constraints, UnleashContext context) {
         if(constraints != null && constraints.size() > 0) {
-            return constraints.stream().allMatch(c -> validateConstraint(c, context));
+            return Stream.of(constraints).allMatch(c -> validateConstraint(c, context));
         } else {
             return true;
         }

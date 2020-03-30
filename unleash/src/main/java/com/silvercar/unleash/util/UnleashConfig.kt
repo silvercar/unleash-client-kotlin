@@ -1,11 +1,11 @@
 package com.silvercar.unleash.util
 
+import com.annimon.stream.Optional
 import com.silvercar.unleash.CustomHttpHeadersProvider
 import com.silvercar.unleash.DefaultCustomHttpHeadersProviderImpl
 import com.silvercar.unleash.UnleashContextProvider
 import com.silvercar.unleash.event.NoOpSubscriber
 import com.silvercar.unleash.event.UnleashSubscriber
-import java8.util.Optional
 import java.io.File
 import java.net.*
 import java.util.*

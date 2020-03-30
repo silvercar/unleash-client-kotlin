@@ -1,12 +1,13 @@
 package com.silvercar.unleash.repository;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.silvercar.unleash.event.EventDispatcher;
 import com.silvercar.unleash.event.UnleashReady;
 import com.silvercar.unleash.util.UnleashConfig;
 import com.silvercar.unleash.util.UnleashScheduledExecutor;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.silvercar.unleash.FeatureToggle;
 import com.silvercar.unleash.UnleashException;
@@ -79,6 +80,6 @@ public final class FeatureToggleRepository implements ToggleRepository {
 
     @Override
     public List<String> getFeatureNames() {
-        return toggleCollection.getFeatures().stream().map(toggle -> toggle.getName()).collect(Collectors.toList());
+        return Stream.of(toggleCollection.getFeatures()).map(toggle -> toggle.getName()).collect(Collectors.toList());
     }
 }

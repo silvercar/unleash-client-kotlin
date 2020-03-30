@@ -11,9 +11,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
 import com.github.jenspiegsa.mockitoextension.ConfigureWireMock;
 import com.github.jenspiegsa.mockitoextension.InjectServer;
 import com.github.jenspiegsa.mockitoextension.WireMockExtension;
@@ -57,7 +57,7 @@ public class ClientSpecificationTest {
             tests.addAll(createTests(name));
             tests.addAll(createVariantTests(name));
         }
-        return tests.stream();
+        return Stream.of(tests);
     }
 
     private List<DynamicTest> createTests(String fileName) throws IOException, URISyntaxException {
@@ -66,7 +66,7 @@ public class ClientSpecificationTest {
         Unleash unleash = setupUnleash(testDefinition);
 
         //Create all test cases in testDefinition.
-        return testDefinition.getTests().stream()
+        return Stream.of(testDefinition.getTests())
                 .map(test -> DynamicTest.dynamicTest(fileName + "/" + test.getDescription(), () -> {
                     boolean result = unleash.isEnabled(test.getToggleName(), buildContext(test.getContext()));
                     assertEquals(test.getExpectedResult(), result, test.getDescription());
@@ -80,7 +80,7 @@ public class ClientSpecificationTest {
         Unleash unleash = setupUnleash(testDefinition);
 
         //Create all test cases in testDefinition.
-        return testDefinition.getVariantTests().stream()
+        return Stream.of(testDefinition.getVariantTests())
                 .map(test -> DynamicTest.dynamicTest(fileName + "/" + test.getDescription(), () -> {
                     Variant result = unleash.getVariant(test.getToggleName(), buildContext(test.getContext()));
                     assertEquals(test.getExpectedResult().getName(), result.getName(), test.getDescription());
