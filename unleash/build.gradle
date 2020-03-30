@@ -15,7 +15,7 @@ dependencies {
     implementation 'com.sangupta:murmur:1.0.0'
 
     // streamsupport
-    implementation ('net.sourceforge.streamsupport:streamsupport:1.5.3') {
+    implementation ('net.sourceforge.streamsupport:streamsupport:1.7.2') {
         because 'We need the Optional and Stream classes to run on APIs < 24'
     }
 
