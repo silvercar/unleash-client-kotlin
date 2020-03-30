@@ -95,7 +95,14 @@ public class UnleashContext {
             context.userId.ifPresent(val -> this.userId = val);
             context.sessionId.ifPresent(val -> this.sessionId = val);
             context.remoteAddress.ifPresent(val -> this.remoteAddress = val);
-            context.properties.forEach(this.properties::put);
+
+            // TODO: Use Kotlins method after Kotlion conversion - original line below
+//            context.properties.forEach(this.properties::put);
+            for (Map.Entry<String, String> entry : context.properties.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                this.properties.put(key, value);
+            }
         }
 
         public Builder appName(String appName) {

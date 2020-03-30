@@ -41,7 +41,19 @@ public class JsonToggleCollectionDeserializer implements JsonDeserializer<Toggle
 
         JsonArray features = rootElement.getAsJsonObject().getAsJsonArray("features");
 
-        features.forEach(elm -> {
+        // TODO: Use Kotlins method after Kotlion conversion - original line below
+//        features.forEach(elm -> {
+//            JsonObject featureObj = elm.getAsJsonObject();
+//
+//            String name = featureObj.get("name").getAsString();
+//            boolean enabled = featureObj.get("enabled").getAsBoolean();
+//            String strategyName = featureObj.get("strategy").getAsString();
+//            Map<String, String> strategyParams = context.deserialize(featureObj.get("parameters"), PARAMS_TYPE);
+//
+//            ActivationStrategy strategy = new ActivationStrategy(strategyName, strategyParams);
+//            featureToggles.add(new FeatureToggle(name, enabled, singletonList(strategy), emptyList()));
+//        });
+        for (JsonElement elm : features) {
             JsonObject featureObj = elm.getAsJsonObject();
 
             String name = featureObj.get("name").getAsString();
@@ -51,7 +63,7 @@ public class JsonToggleCollectionDeserializer implements JsonDeserializer<Toggle
 
             ActivationStrategy strategy = new ActivationStrategy(strategyName, strategyParams);
             featureToggles.add(new FeatureToggle(name, enabled, singletonList(strategy), emptyList()));
-        });
+        }
 
         return new ToggleCollection(featureToggles);
     }

@@ -148,7 +148,11 @@ public final class DefaultUnleash implements Unleash {
     private Map<String, Strategy> buildStrategyMap(Strategy[] strategies) {
         Map<String, Strategy> map = new HashMap<>();
 
-        BUILTIN_STRATEGIES.forEach(strategy -> map.put(strategy.getName(), strategy));
+        // TODO: Use Kotlins method after Kotlion conversion - original line below
+//        BUILTIN_STRATEGIES.forEach(strategy -> map.put(strategy.getName(), strategy));
+        for (Strategy BUILTIN_STRATEGY : BUILTIN_STRATEGIES) {
+            map.put(BUILTIN_STRATEGY.getName(), BUILTIN_STRATEGY);
+        }
 
         if (strategies != null) {
             for (Strategy strategy : strategies) {

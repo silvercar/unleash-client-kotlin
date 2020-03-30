@@ -11,6 +11,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
@@ -131,7 +132,13 @@ public class ClientSpecificationTest {
                 .appName(context.getAppName());
 
         if(context.getProperties() != null) {
-            context.getProperties().forEach(builder::addProperty);
+            // TODO: Use Kotlins method after Kotlion conversion - original line below
+//            context.getProperties().forEach(builder::addProperty);
+            for (Map.Entry<String, String> entry : context.getProperties().entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
+                builder.addProperty(key, value);
+            }
         }
         
         return builder.build();
