@@ -23,7 +23,7 @@ public class VariantUtilTest {
         FeatureToggle toggle = new FeatureToggle("test.variants", true, asList(defaultStrategy));
         UnleashContext context = UnleashContext.builder().build();
 
-        Variant variant = VariantUtil.selectVariant(toggle, context, DISABLED_VARIANT);
+        Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
 
         assertThat(variant, is(DISABLED_VARIANT));
@@ -32,8 +32,8 @@ public class VariantUtilTest {
     @Test
     public void should_return_variant1() {
         VariantDefinition v1 = new VariantDefinition("a", 33, new Payload("string", "asd"), Collections.emptyList());
-        VariantDefinition v2 = new VariantDefinition("b", 33);
-        VariantDefinition v3 = new VariantDefinition("c", 34);
+        VariantDefinition v2 = new VariantDefinitionBuilder("b", 33).build();
+        VariantDefinition v3 = new VariantDefinitionBuilder("c", 34).build();
 
         FeatureToggle toggle = new FeatureToggle(
                 "test.variants",
@@ -42,7 +42,7 @@ public class VariantUtilTest {
 
         UnleashContext context = UnleashContext.builder().userId("11").build();
 
-        Variant variant = VariantUtil.selectVariant(toggle, context, DISABLED_VARIANT);
+        Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v1.getName()));
         assertThat(variant.getPayload().get(), is(v1.getPayload()));
@@ -52,8 +52,8 @@ public class VariantUtilTest {
     @Test
     public void should_return_variant2() {
         VariantDefinition v1 = new VariantDefinition("a", 33, new Payload("string", "asd"), Collections.emptyList());
-        VariantDefinition v2 = new VariantDefinition("b", 33);
-        VariantDefinition v3 = new VariantDefinition("c", 34);
+        VariantDefinition v2 = new VariantDefinitionBuilder("b", 33).build();
+        VariantDefinition v3 = new VariantDefinitionBuilder("c", 34).build();
 
         FeatureToggle toggle = new FeatureToggle(
                 "test.variants",
@@ -62,16 +62,16 @@ public class VariantUtilTest {
 
         UnleashContext context = UnleashContext.builder().userId("163").build();
 
-        Variant variant = VariantUtil.selectVariant(toggle, context, DISABLED_VARIANT);
+        Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v2.getName()));
     }
 
     @Test
     public void should_return_variant3() {
-        VariantDefinition v1 = new VariantDefinition("a", 33);
-        VariantDefinition v2 = new VariantDefinition("b", 33);
-        VariantDefinition v3 = new VariantDefinition("c", 34);
+        VariantDefinition v1 = new VariantDefinitionBuilder("a", 33).build();
+        VariantDefinition v2 = new VariantDefinitionBuilder("b", 33).build();
+        VariantDefinition v3 = new VariantDefinitionBuilder("c", 34).build();
 
         FeatureToggle toggle = new FeatureToggle(
                 "test.variants",
@@ -80,17 +80,17 @@ public class VariantUtilTest {
 
         UnleashContext context = UnleashContext.builder().userId("40").build();
 
-        Variant variant = VariantUtil.selectVariant(toggle, context, DISABLED_VARIANT);
+        Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v3.getName()));
     }
 
     @Test
     public void should_return_variant_override() {
-        VariantDefinition v1 = new VariantDefinition("a", 33);
+        VariantDefinition v1 = new VariantDefinitionBuilder("a", 33).build();
         VariantOverride override = new VariantOverride("userId", asList("11", "12", "123", "44"));
         VariantDefinition v2 = new VariantDefinition("b", 33, null, asList(override));
-        VariantDefinition v3 = new VariantDefinition("c", 34);
+        VariantDefinition v3 = new VariantDefinitionBuilder("c", 34).build();
 
         FeatureToggle toggle = new FeatureToggle(
                 "test.variants",
@@ -99,7 +99,7 @@ public class VariantUtilTest {
 
         UnleashContext context = UnleashContext.builder().userId("123").build();
 
-        Variant variant = VariantUtil.selectVariant(toggle, context, DISABLED_VARIANT);
+        Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v2.getName()));
     }
@@ -118,7 +118,7 @@ public class VariantUtilTest {
 
         UnleashContext context = UnleashContext.builder().remoteAddress("11.11.11.11").build();
 
-        Variant variant = VariantUtil.selectVariant(toggle, context, DISABLED_VARIANT);
+        Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v3.getName()));
         assertThat(variant.getPayload().get(), is(v3.getPayload()));
@@ -127,10 +127,10 @@ public class VariantUtilTest {
 
     @Test
     public void should_return_variant_override_on_custom_prop() {
-        VariantDefinition v1 = new VariantDefinition("a", 33);
+        VariantDefinition v1 = new VariantDefinitionBuilder("a", 33).build();
         VariantOverride override = new VariantOverride("env", asList("ci", "local", "dev"));
         VariantDefinition v2 = new VariantDefinition("b", 33, null, asList(override));
-        VariantDefinition v3 = new VariantDefinition("c", 34);
+        VariantDefinition v3 = new VariantDefinitionBuilder("c", 34).build();
 
         FeatureToggle toggle = new FeatureToggle(
                 "test.variants",
@@ -142,7 +142,7 @@ public class VariantUtilTest {
                 .addProperty("env", "dev")
                 .build();
 
-        Variant variant = VariantUtil.selectVariant(toggle, context, DISABLED_VARIANT);
+        Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v2.getName()));
     }
@@ -151,11 +151,11 @@ public class VariantUtilTest {
     public void should_return_variant_override_on_sessionId() {
         String sessionId = "122221";
 
-        VariantDefinition v1 = new VariantDefinition("a", 33);
+        VariantDefinition v1 = new VariantDefinitionBuilder("a", 33).build();
         VariantOverride override_env = new VariantOverride("env", asList("dev"));
         VariantOverride override_session = new VariantOverride("sessionId", asList(sessionId));
         VariantDefinition v2 = new VariantDefinition("b", 33, null, asList(override_env, override_session));
-        VariantDefinition v3 = new VariantDefinition("c", 34);
+        VariantDefinition v3 = new VariantDefinitionBuilder("c", 34).build();
 
         FeatureToggle toggle = new FeatureToggle(
                 "test.variants",
@@ -168,7 +168,7 @@ public class VariantUtilTest {
                 .sessionId(sessionId)
                 .build();
 
-        Variant variant = VariantUtil.selectVariant(toggle, context, DISABLED_VARIANT);
+        Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v2.getName()));
     }

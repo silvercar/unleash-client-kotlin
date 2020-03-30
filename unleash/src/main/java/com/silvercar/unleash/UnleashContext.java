@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.silvercar.unleash.util.UnleashConfig;
+import org.jetbrains.annotations.NotNull;
 
 public class UnleashContext {
     private final Optional<String> appName;
@@ -32,12 +33,24 @@ public class UnleashContext {
         return userId;
     }
 
+    @NotNull public String getUserId2() {
+        return userId.isPresent() ? userId.get() : "";
+    }
+
     public Optional<String> getSessionId() {
         return sessionId;
     }
 
+    @NotNull public String getSessionId2() {
+        return sessionId.isPresent() ? sessionId.get() : "";
+    }
+
     public Optional<String> getRemoteAddress() {
         return remoteAddress;
+    }
+
+    @NotNull public String getRemoteAddress2() {
+        return remoteAddress.isPresent() ? remoteAddress.get() : "";
     }
 
     public Map<String, String> getProperties() {
