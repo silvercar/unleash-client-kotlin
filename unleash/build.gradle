@@ -14,9 +14,9 @@ dependencies {
     // murmur
     implementation 'com.sangupta:murmur:1.0.0'
 
-    // streamsupport
-    implementation ('net.sourceforge.streamsupport:streamsupport:1.7.2') {
-        because 'We need the Optional and Stream classes to run on APIs < 24'
+    // stream
+    implementation('com.annimon:stream:1.2.1') {
+        because 'We need the Java8 Optional, Stream, and some other classes to run on APIs < 24'
     }
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
