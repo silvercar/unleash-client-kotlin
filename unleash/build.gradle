@@ -23,6 +23,10 @@ dependencies {
     implementation( 'com.jakewharton.threetenabp:threetenabp:1.2.3') {
         because 'Gives us backward compatability for Date classes on APIs < 24'
     }
+    testImplementation ("org.threeten:threetenbp:1.4.2") {
+        because 'Unit tests require the original threetenbp library, ' +
+                'as it does not require a context to initialize'
+    }
 
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.4.2'
 
