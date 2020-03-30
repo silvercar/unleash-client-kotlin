@@ -7,17 +7,17 @@ import com.silvercar.unleash.util.UnleashConfig;
 import com.silvercar.unleash.util.UnleashURLs;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 
 public class UnleashMetricsSender {
     private static final int CONNECT_TIMEOUT = 1000;
@@ -45,7 +45,7 @@ public class UnleashMetricsSender {
         @Override
         public JsonElement serialize(
                 LocalDateTime localDateTime, Type type, JsonSerializationContext jsonSerializationContext) {
-            return new JsonPrimitive(ISO_INSTANT.format(localDateTime.toInstant(ZoneOffset.UTC)));
+            return new JsonPrimitive(DateTimeFormatter.ISO_INSTANT.format(localDateTime.toInstant(ZoneOffset.UTC)));
         };
     }
 

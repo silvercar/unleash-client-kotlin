@@ -4,7 +4,7 @@
  import com.silvercar.unleash.event.UnleashSubscriber;
  import com.silvercar.unleash.util.UnleashConfig;
 
- import java.time.LocalDateTime;
+ import org.threeten.bp.LocalDateTime;
  import java.util.Set;
 
 public class ClientRegistration implements UnleashEvent {
