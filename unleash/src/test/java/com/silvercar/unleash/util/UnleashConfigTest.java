@@ -186,7 +186,7 @@ public class UnleashConfigTest {
                 .unleashAPI("http://unleash.org")
                 .build();
 
-        assertThrows(IllegalStateException.class, ex);
+        assertThrows(IllegalArgumentException.class, ex);
     }
 
     @Test
