@@ -1,7 +1,7 @@
 package com.silvercar.unleash.strategy;
 
 import java.util.Map;
-import java.util.Optional;
+import java8.util.Optional;
 import java.util.function.Supplier;
 
 import com.silvercar.unleash.UnleashContext;

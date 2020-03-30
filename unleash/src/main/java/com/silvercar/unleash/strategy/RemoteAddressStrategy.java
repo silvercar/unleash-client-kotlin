@@ -5,7 +5,7 @@ import com.silvercar.unleash.util.IpAddressMatcher;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
+import java8.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 

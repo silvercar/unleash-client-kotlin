@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
+import java8.util.Optional;
 
 public class ApplicationHostnameStrategy implements Strategy {
     public static final String HOST_NAMES_PARAM = "hostNames";

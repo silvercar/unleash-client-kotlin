@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java8.util.Optional;
 import java.util.function.BiFunction;
 
 import com.silvercar.unleash.event.EventDispatcher;
@@ -18,7 +18,6 @@ import com.silvercar.unleash.repository.ToggleRepository;
 import com.silvercar.unleash.strategy.*;
 import com.silvercar.unleash.util.UnleashConfig;
 
-import static java.util.Optional.ofNullable;
 import static com.silvercar.unleash.Variant.DISABLED_VARIANT;
 import static com.silvercar.unleash.variant.VariantUtil.selectVariant;
 
@@ -134,7 +133,7 @@ public final class DefaultUnleash implements Unleash {
     }
 
     public Optional<FeatureToggle> getFeatureToggleDefinition(String toggleName) {
-        return ofNullable(toggleRepository.getToggle(toggleName));
+        return Optional.ofNullable(toggleRepository.getToggle(toggleName));
     }
 
     public List<String> getFeatureToggleNames() {

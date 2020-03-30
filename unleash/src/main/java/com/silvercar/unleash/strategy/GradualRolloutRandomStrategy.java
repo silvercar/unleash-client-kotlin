@@ -1,10 +1,7 @@
 package com.silvercar.unleash.strategy;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Random;
-
-import com.silvercar.unleash.strategy.Strategy;
 
 public final class GradualRolloutRandomStrategy implements Strategy {
     protected static final String PERCENTAGE = "percentage";

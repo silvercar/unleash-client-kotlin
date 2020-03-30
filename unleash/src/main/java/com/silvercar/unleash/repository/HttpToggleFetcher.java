@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
+import java8.util.Optional;
 
 import com.silvercar.unleash.UnleashException;
 import com.silvercar.unleash.util.UnleashConfig;
