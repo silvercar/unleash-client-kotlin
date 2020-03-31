@@ -13,7 +13,7 @@ class UnleashContext(
     properties: Map<String?, String?>
 ) {
     val appName: String?
-    val environment: Optional<String?>
+    val environment: String?
     val userId: Optional<String?>
     val sessionId: Optional<String?>
     val remoteAddress: Optional<String?>
@@ -30,7 +30,7 @@ class UnleashContext(
     // TODO: This won't be needed anymore after converting this class's optionals to strings
     fun getByName(contextName: String?): Optional<String?> {
         return when (contextName) {
-            "environment" -> environment
+//            "environment" -> environment
 //            "appName" -> appName
             "userId" -> userId
             "sessionId" -> sessionId
@@ -42,12 +42,9 @@ class UnleashContext(
     }
 
     fun applyStaticFields(config: UnleashConfig): UnleashContext {
-        val builder =
-            Builder(this)
-        if (!environment.isPresent) {
-            builder.environment(config.environment)
-        }
-        if(this.appName.isNullOrEmpty()) builder.appName(config.appName)
+        val builder = Builder(this)
+        if (this.environment.isNullOrEmpty()) builder.environment(config.environment)
+        if (this.appName.isNullOrEmpty()) builder.appName(config.appName)
         return builder.build()
     }
 
@@ -62,9 +59,7 @@ class UnleashContext(
         constructor() // Need empty constructor for builder pattern
         constructor(context: UnleashContext) {
             appName = if (context.appName.isNullOrEmpty()) "" else context.appName
-            context.environment.ifPresent { `val`: String? ->
-                environment = `val`
-            }
+            environment = if (context.environment.isNullOrEmpty()) "" else context.environment
             context.userId.ifPresent { `val`: String? ->
                 userId = `val`
             }
@@ -83,7 +78,7 @@ class UnleashContext(
             return this
         }
 
-        fun environment(environment: String?): Builder {
+        fun environment(environment: String): Builder {
             this.environment = environment
             return this
         }
@@ -130,7 +125,7 @@ class UnleashContext(
 
     init {
         this.appName = appName
-        this.environment = Optional.ofNullable(environment)
+        this.environment = environment
         this.userId = Optional.ofNullable(userId)
         this.sessionId = Optional.ofNullable(sessionId)
         this.remoteAddress = Optional.ofNullable(remoteAddress)
