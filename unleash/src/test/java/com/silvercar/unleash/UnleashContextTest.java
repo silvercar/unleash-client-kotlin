@@ -41,7 +41,7 @@ public class UnleashContextTest {
         assertThat(context.getSessionId().get(), is("123"));
         assertThat(context.getRemoteAddress().get(), is("127.0.0.1"));
         assertThat(context.getEnvironment().get(), is("prod"));
-        assertThat(context.getAppName().get(), is("myapp"));
+        assertThat(context.getAppName(), is("myapp"));
         assertThat(context.getProperties().get("test"), is("me"));
     }
 
@@ -67,7 +67,7 @@ public class UnleashContextTest {
         assertThat(enhanced.getRemoteAddress().get(), is("127.0.0.1"));
 
         assertThat(enhanced.getEnvironment().get(), is("stage"));
-        assertThat(enhanced.getAppName().get(), is("someApp"));
+        assertThat(enhanced.getAppName(), is("someApp"));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class UnleashContextTest {
         assertThat(enhanced.getSessionId().get(), is("123"));
         assertThat(enhanced.getRemoteAddress().get(), is("127.0.0.1"));
         assertThat(enhanced.getEnvironment().get(), is("env"));
-        assertThat(enhanced.getAppName().get(), is("myApp"));
+        assertThat(enhanced.getAppName(), is("myApp"));
     }
 
 }
