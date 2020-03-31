@@ -30,28 +30,31 @@ public class FlexibleRolloutStrategy implements Strategy {
         return false;
     }
 
-    private Optional<String> resolveStickiness(String stickiness, UnleashContext context) {
+    private String resolveStickiness(String stickiness, UnleashContext context) {
         switch (stickiness) {
             case "userId": return context.getUserId();
             case "sessionId": return context.getSessionId();
-            case "random": return Optional.of(randomGenerator.get());
+            case "random": return randomGenerator.get();
             default:
-                String value = context.getUserId()
-                        .orElse(context.getSessionId()
-                        .orElse(this.randomGenerator.get()));
-                return Optional.of(value);
+                String userId = context.getUserId();
+                if (userId != null && !userId.isEmpty()) return userId;
+
+                String sessionId = context.getSessionId();
+                if (sessionId != null && !sessionId.isEmpty()) return sessionId;
+
+                return this.randomGenerator.get();
         }
     }
 
     @Override
     public boolean isEnabled(Map<String, String> parameters, UnleashContext unleashContext) {
         final String stickiness = getStickiness(parameters);
-        final Optional<String> stickinessId = resolveStickiness(stickiness, unleashContext);
+        final String stickinessId = resolveStickiness(stickiness, unleashContext);
         final int percentage = StrategyUtils.getPercentage(parameters.get(PERCENTAGE));
         final String groupId = Optional.ofNullable(parameters.get(GROUP_ID)).orElse("");
 
-        if(stickinessId.isPresent()) {
-            final int normalizedUserId = StrategyUtils.getNormalizedNumber(stickinessId.get(), groupId);
+        if (stickinessId != null && !stickinessId.isEmpty()) {
+            final int normalizedUserId = StrategyUtils.getNormalizedNumber(stickinessId, groupId);
             return percentage > 0 && normalizedUserId <= percentage;
         } else {
             return false;

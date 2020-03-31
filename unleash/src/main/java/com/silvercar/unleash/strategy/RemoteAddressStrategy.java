@@ -33,7 +33,7 @@ public final class RemoteAddressStrategy implements Strategy {
                         .flatMap(ipAddress -> buildIpAddressMatcher(ipAddress)
                                 .map(Stream::of)
                                 .orElseGet(Stream::empty))
-                        .map(subnet -> context.getRemoteAddress()
+                        .map(subnet -> Optional.ofNullable(context.getRemoteAddress())
                                 .map(subnet::matches)
                                 .orElse(false))
                         .anyMatch(Boolean.TRUE::equals))

@@ -35,16 +35,14 @@ public final class GradualRolloutUserIdStrategy implements Strategy {
 
     @Override
     public boolean isEnabled(final Map<String, String> parameters, UnleashContext unleashContext) {
-        Optional<String> userId = unleashContext.getUserId();
+        String userId = unleashContext.getUserId();
 
-        if(!userId.isPresent()) {
-            return false;
-        }
+        if (userId == null || userId.isEmpty()) return false;
 
         final int percentage = StrategyUtils.getPercentage(parameters.get(PERCENTAGE));
         final String groupId = Optional.ofNullable(parameters.get(GROUP_ID)).orElse("");
 
-        final int normalizedUserId = StrategyUtils.getNormalizedNumber(userId.get(), groupId);
+        final int normalizedUserId = StrategyUtils.getNormalizedNumber(userId, groupId);
 
         return percentage > 0 && normalizedUserId <= percentage;
     }

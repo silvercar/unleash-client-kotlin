@@ -17,22 +17,26 @@ public final class VariantUtil {
 
     private static Predicate<VariantOverride> overrideMatchesContext(UnleashContext context) {
         return (override) -> {
-            Optional<String> contextValue;
+            String contextValue;
             switch (override.getContextName()) {
                 case "userId": {
-                    contextValue = context.getUserId();
+                    String userId = context.getUserId();
+                    contextValue = userId != null && !userId.isEmpty() ? userId : "";
                     break;
                 } case "sessionId": {
-                    contextValue = context.getSessionId();
+                    String sessionId = context.getSessionId();
+                    contextValue = sessionId != null && !sessionId.isEmpty() ? sessionId : "";
                     break;
                 } case "remoteAddress": {
-                    contextValue = context.getRemoteAddress();
+                    String remoteAddress = context.getRemoteAddress();
+                    contextValue = remoteAddress != null && !remoteAddress.isEmpty() ? remoteAddress : "";
                     break;
                 } default:
-                    contextValue = Optional.ofNullable(context.getProperties().get(override.getContextName()));
+                    String defaultValue = context.getProperties().get(override.getContextName());
+                    contextValue = defaultValue != null && !defaultValue.isEmpty() ? defaultValue : "";
                     break;
             }
-            return override.getValues().contains(contextValue.orElse(""));
+            return override.getValues().contains(contextValue);
         };
     }
 
@@ -43,10 +47,19 @@ public final class VariantUtil {
     }
 
     private static String getIdentifier(UnleashContext context) {
-        return context.getUserId()
-                .orElse(context.getSessionId()
-                .orElse(context.getRemoteAddress()
-                .orElse(Double.toString(Math.random()))));
+        if (context.getUserId() != null && !context.getUserId().isEmpty()) {
+            return context.getUserId();
+        }
+
+        if (context.getSessionId() != null && !context.getSessionId().isEmpty()) {
+            return context.getSessionId();
+        }
+
+        if (context.getRemoteAddress() != null && !context.getRemoteAddress().isEmpty()) {
+            return context.getRemoteAddress();
+        }
+
+        return Double.toString(Math.random());
     }
 
     public static Variant selectVariant(FeatureToggle featureToggle, UnleashContext context, Variant defaultVariant) {

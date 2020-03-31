@@ -35,16 +35,16 @@ public final class GradualRolloutSessionIdStrategy implements Strategy {
 
     @Override
     public boolean isEnabled(final Map<String, String> parameters, UnleashContext unleashContext) {
-        Optional<String> sessionId = unleashContext.getSessionId();
+        String sessionId = unleashContext.getSessionId();
 
-        if(!sessionId.isPresent()) {
+        if(sessionId == null || sessionId.isEmpty()) {
             return false;
         }
 
         final int percentage = StrategyUtils.getPercentage(parameters.get(PERCENTAGE));
         final String groupId = Optional.ofNullable(parameters.get(GROUP_ID)).orElse("");
 
-        final int normalizedSessionId = StrategyUtils.getNormalizedNumber(sessionId.get(), groupId);
+        final int normalizedSessionId = StrategyUtils.getNormalizedNumber(sessionId, groupId);
 
         return percentage > 0 && normalizedSessionId <= percentage;
     }

@@ -53,9 +53,9 @@ class RemoteAddressStrategyTest {
                 Arguments.of(FIRST_IPV4, SECOND_IPV4, false),
                 Arguments.of(FOURTH_IPV4, String.join(",", ALL_IPV4), true),
                 Arguments.of(FIRST_IPV4, IPV4_SUBNET, false),
-                Arguments.of(FIRST_IPV4, null, false),
                 Arguments.of(FIRST_IPV4, "", false),
-                Arguments.of(null, String.join(",", ALL_IPV4), false),
+                Arguments.of(FIRST_IPV4, "", false),
+                Arguments.of("", String.join(",", ALL_IPV4), false),
 
                 Arguments.of(FIRST_IPV6, FIRST_IPV6, true),
                 Arguments.of(FIRST_IPV6, String.join(",", ALL_IPV6), true),
@@ -68,9 +68,9 @@ class RemoteAddressStrategyTest {
                 Arguments.of(SECOND_IPV6, String.join(".", ALL_IPV6), false),
                 Arguments.of(FIRST_IPV6, SECOND_IPV6, false),
                 Arguments.of(FIRST_IPV6, IPV6_SUBNET, false),
-                Arguments.of(FIRST_IPV6, null, false),
                 Arguments.of(FIRST_IPV6, "", false),
-                Arguments.of(null, String.join(".", ALL_IPV6), false),
+                Arguments.of(FIRST_IPV6, "", false),
+                Arguments.of("", String.join(".", ALL_IPV6), false),
 
                 Arguments.of(FIRST_IPV4, String.join(".", ALL), false),
                 Arguments.of(FIRST_IPV6, String.join(".", ALL), false));

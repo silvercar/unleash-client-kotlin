@@ -19,8 +19,9 @@ public class ConstraintUtil {
     }
 
     private static boolean validateConstraint(Constraint constraint, UnleashContext context) {
-        Optional<String> contextValue = context.getByName(constraint.getContextName());
-        boolean isIn = contextValue.isPresent() && constraint.getValues().contains(contextValue.get().trim());
+        String contextValue = context.getByName(constraint.getContextName());
+        boolean contextValueValid = contextValue != null && !contextValue.isEmpty();
+        boolean isIn = contextValueValid && constraint.getValues().contains(contextValue.trim());
         return (constraint.getOperator() == Operator.IN) == isIn;
     }
 }

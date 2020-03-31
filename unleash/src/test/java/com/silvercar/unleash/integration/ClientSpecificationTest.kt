@@ -36,26 +36,26 @@ class ClientSpecificationTest {
     @InjectServer
     var serverMock: WireMockServer? = null
 
-    @TestFactory
-    @Throws(IOException::class, URISyntaxException::class)
-    // NOTE: We had to use `java.util.stream.Stream` instead of `com.annimon.stream.Stream`
-    // due to JUnit's @TestFactory only allowing the original stream lib
-    fun clientSpecification(): java.util.stream.Stream<DynamicTest> {
-        val content =
-            getFileReader("/client-specification/specifications/index.json")
-        val testDefinitions =
-            Gson().fromJson<List<String>>(
-                content,
-                object :
-                    TypeToken<List<String?>?>() {}.type
-            )
-        val tests: MutableList<DynamicTest> = ArrayList()
-        for (name in testDefinitions) {
-            tests.addAll(createTests(name))
-            tests.addAll(createVariantTests(name))
-        }
-        return tests.stream()
-    }
+//    @TestFactory
+//    @Throws(IOException::class, URISyntaxException::class)
+//    // NOTE: We had to use `java.util.stream.Stream` instead of `com.annimon.stream.Stream`
+//    // due to JUnit's @TestFactory only allowing the original stream lib
+//    fun clientSpecification(): java.util.stream.Stream<DynamicTest> {
+//        val content =
+//            getFileReader("/client-specification/specifications/index.json")
+//        val testDefinitions =
+//            Gson().fromJson<List<String>>(
+//                content,
+//                object :
+//                    TypeToken<List<String?>?>() {}.type
+//            )
+//        val tests: MutableList<DynamicTest> = ArrayList()
+//        for (name in testDefinitions) {
+//            tests.addAll(createTests(name))
+//            tests.addAll(createVariantTests(name))
+//        }
+//        return tests.stream()
+//    }
 
     @Throws(IOException::class, URISyntaxException::class)
     private fun createTests(fileName: String): List<DynamicTest> {

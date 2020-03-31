@@ -24,10 +24,10 @@ public final class UserWithIdStrategy implements Strategy {
 
     @Override
     public boolean isEnabled(Map<String, String> parameters, UnleashContext unleashContext) {
-        return unleashContext.getUserId()
-                           .map(currentUserId -> Optional.ofNullable(parameters.get(PARAM))
-                                                         .map(userIdString -> asList(userIdString.split(",\\s?")))
-                                                         .filter(f -> f.contains(currentUserId)).isPresent())
-                           .orElse(false);
+        return Optional.ofNullable(unleashContext.getUserId())
+                .map(currentUserId -> Optional.ofNullable(parameters.get(PARAM))
+                .map(userIdString -> asList(userIdString.split(",\\s?")))
+                .filter(f -> f.contains(currentUserId)).isPresent())
+                .orElse(false);
     }
 }
