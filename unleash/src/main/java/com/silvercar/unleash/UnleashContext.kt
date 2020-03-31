@@ -47,9 +47,7 @@ class UnleashContext(
         if (!environment.isPresent) {
             builder.environment(config.environment)
         }
-        if(this.appName.isNullOrEmpty()) {
-            builder.appName(config.appName);
-        }
+        if(this.appName.isNullOrEmpty()) builder.appName(config.appName)
         return builder.build()
     }
 
@@ -63,7 +61,7 @@ class UnleashContext(
 
         constructor() // Need empty constructor for builder pattern
         constructor(context: UnleashContext) {
-            appName = if (!context.appName.isNullOrEmpty()) context.appName else ""
+            appName = if (context.appName.isNullOrEmpty()) "" else context.appName
             context.environment.ifPresent { `val`: String? ->
                 environment = `val`
             }
