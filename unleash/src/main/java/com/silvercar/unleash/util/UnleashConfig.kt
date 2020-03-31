@@ -14,7 +14,7 @@ class UnleashConfig(
     unleashAPI: URI?,
     customHttpHeaders: Map<String, String>,
     customHttpHeadersProvider: CustomHttpHeadersProvider,
-    appName: String?,
+    appName: String,
     environment: String,
     instanceId: String?,
     sdkVersion: String,
@@ -82,7 +82,7 @@ class UnleashConfig(
             HashMap()
         private var customHttpHeadersProvider: CustomHttpHeadersProvider =
             DefaultCustomHttpHeadersProviderImpl()
-        private var appName: String? = null
+        private var appName = ""
         private var environment = "default"
         private var instanceId =
             defaultInstanceId
@@ -120,7 +120,7 @@ class UnleashConfig(
             return this
         }
 
-        fun appName(appName: String?): Builder {
+        fun appName(appName: String): Builder {
             this.appName = appName
             return this
         }
@@ -237,12 +237,13 @@ class UnleashConfig(
     companion object {
         const val UNLEASH_APP_NAME_HEADER = "UNLEASH-APPNAME"
         const val UNLEASH_INSTANCE_ID_HEADER = "UNLEASH-INSTANCEID"
-        @kotlin.jvm.JvmStatic
+
+        @JvmStatic
         fun builder(): Builder {
             return Builder()
         }
 
-        @kotlin.jvm.JvmStatic
+        @JvmStatic
         fun setRequestProperties(
             connection: HttpURLConnection,
             config: UnleashConfig
@@ -274,7 +275,7 @@ class UnleashConfig(
     }
 
     init {
-        checkNotNull(appName) { "You are required to specify the unleash appName" }
+        check(appName.isNotEmpty()) { "You are required to specify the unleash appName" }
         checkNotNull(instanceId) { "You are required to specify the unleash instanceId" }
         checkNotNull(unleashAPI) { "You are required to specify the unleashAPI url" }
         checkNotNull(unleashScheduledExecutor) { "You are required to specify a scheduler" }
