@@ -10,8 +10,12 @@ import com.silvercar.unleash.DefaultUnleash;
 import com.silvercar.unleash.SynchronousTestExecutor;
 import com.silvercar.unleash.Unleash;
 import com.silvercar.unleash.UnleashException;
+import com.silvercar.unleash.metric.ClientMetrics;
+import com.silvercar.unleash.metric.ClientRegistration;
 import com.silvercar.unleash.repository.FeatureToggleResponse;
+import com.silvercar.unleash.repository.ToggleCollection;
 import com.silvercar.unleash.util.UnleashConfig;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -85,27 +89,38 @@ public class SubscriberTest {
         private List<UnleashException> errors = new ArrayList<>();
 
         @Override
-        public void on(UnleashEvent unleashEvent) {
-            this.events.add(unleashEvent);
+        public void on(UnleashEvent event) {
+            this.events.add(event);
         }
 
         @Override
-        public void onError(UnleashException unleashException) {
-            this.errors.add(unleashException);
+        public void onError(UnleashException exception) {
+            this.errors.add(exception);
         }
 
         @Override
-        public void toggleEvaluated(ToggleEvaluated toggleEvaluated) {
+        public void toggleEvaluated(ToggleEvaluated evaluated) {
             this.toggleEvalutatedCounter++;
-            this.toggleName = toggleEvaluated.getToggleName();
-            this.toggleEnabled = toggleEvaluated.isEnabled();
+            this.toggleName = evaluated.getToggleName();
+            this.toggleEnabled = evaluated.isEnabled();
         }
 
         @Override
-        public void togglesFetched(FeatureToggleResponse toggleResponse) {
+        public void togglesFetched(FeatureToggleResponse response) {
             this.togglesFetchedCounter++;
-            this.status = toggleResponse.getStatus();
+            this.status = response.getStatus();
+        }
+
+        @Override public void onReady(@NotNull UnleashReady ready) { }
+
+        @Override public void clientMetrics(@NotNull ClientMetrics metrics) { }
+
+        @Override public void clientRegistered(@NotNull ClientRegistration clientRegistration) { }
+
+        @Override public void togglesBackedUp(@NotNull ToggleCollection toggleCollection) { }
+
+        @Override public void toggleBackupRestored(@NotNull ToggleCollection toggleCollection) {
+
         }
     }
-
 }

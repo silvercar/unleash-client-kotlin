@@ -17,7 +17,7 @@ buildscript {
 }
 
 plugins {
-    id "io.gitlab.arturbosch.detekt" version "1.0.0"
+    id "io.gitlab.arturbosch.detekt" version "1.7.4"
 }
 
 // CI doesn't benefit from pre-dex

@@ -54,16 +54,16 @@ class MainActivity : AppCompatActivity() {
           .fetchTogglesInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
           .sendMetricsInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
           .subscriber(object : UnleashSubscriber {
-            override fun onReady(ready: UnleashReady?) {
+            override fun onReady(ready: UnleashReady) {
               Timber.d("Unleash is ready")
               coroutine.resume(unleash)
             }
 
-            override fun togglesFetched(toggleResponse: FeatureToggleResponse?) {
-              toggleResponse?.let { Timber.d("Fetch toggles with status: %s", it.status) }
+            override fun togglesFetched(response: FeatureToggleResponse) {
+              Timber.d("Fetch toggles with status: %s", response.status)
             }
 
-            override fun togglesBackedUp(toggleCollection: ToggleCollection?) {
+            override fun togglesBackedUp(toggleCollection: ToggleCollection) {
               Timber.d("Backup stored.")
             }
           })

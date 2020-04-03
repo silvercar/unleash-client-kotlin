@@ -1,15 +1,19 @@
 package com.silvercar.unleash;
 
+import com.silvercar.unleash.event.ToggleEvaluated;
+import com.silvercar.unleash.event.UnleashEvent;
+import com.silvercar.unleash.event.UnleashSubscriber;
+import com.silvercar.unleash.metric.ClientMetrics;
+import com.silvercar.unleash.metric.ClientRegistration;
 import java.util.Map;
 import java.util.Random;
 
-import com.silvercar.unleash.event.UnleashEvent;
 import com.silvercar.unleash.event.UnleashReady;
-import com.silvercar.unleash.event.UnleashSubscriber;
 import com.silvercar.unleash.repository.FeatureToggleResponse;
 import com.silvercar.unleash.repository.ToggleCollection;
 import com.silvercar.unleash.strategy.Strategy;
 import com.silvercar.unleash.util.UnleashConfig;
+import org.jetbrains.annotations.NotNull;
 
 public class ManualTesting {
     public static void main(String[] args) throws Exception {
@@ -36,8 +40,8 @@ public class ManualTesting {
                     }
 
                     @Override
-                    public void togglesFetched(FeatureToggleResponse toggleResponse) {
-                        System.out.println("Fetch toggles with status: " + toggleResponse.getStatus());
+                    public void togglesFetched(FeatureToggleResponse response) {
+                        System.out.println("Fetch toggles with status: " + response.getStatus());
                     }
 
                     @Override
@@ -51,10 +55,18 @@ public class ManualTesting {
                     }
 
                     @Override
-                    public void onError(UnleashException unleashException) {
-                        System.err.println(unleashException);
+                    public void onError(UnleashException exception) {
+                        System.err.println(exception);
                     }
 
+                    @Override
+                    public void clientRegistered(@NotNull ClientRegistration clientRegistration) { }
+
+                    @Override public void clientMetrics(@NotNull ClientMetrics metrics) { }
+
+                    @Override public void toggleEvaluated(@NotNull ToggleEvaluated evaluated) { }
+
+                    @Override public void on(@NotNull UnleashEvent event) { }
                 })
                 .fetchTogglesInterval(10)
                 .sendMetricsInterval(10)
