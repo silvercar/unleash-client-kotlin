@@ -6,6 +6,7 @@ import com.silvercar.unleash.Variant
 import com.silvercar.unleash.strategy.StrategyUtils
 
 class VariantUtil {
+  @SuppressWarnings("ReturnCount")
   fun selectVariant(
     featureToggle: FeatureToggle,
     context: UnleashContext,

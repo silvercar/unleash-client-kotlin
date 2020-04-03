@@ -1,6 +1,19 @@
 version: 2.1
 
 commands:
+  download_cache_dependencies_unleash:
+    description: "Download and cache dependencies for sample app"
+    steps:
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "unleash/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew unleash:dependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum "unleash/build.gradle" }}
+
   download_cache_dependencies_sample:
     description: "Download and cache dependencies for sample app"
     steps:
@@ -15,6 +28,17 @@ commands:
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "sample/build.gradle" }}
 
 jobs:
+  detekt-unleash:
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - checkout
+      - download_cache_dependencies_unleash
+      - run: ./gradlew unleash:detekt
+
   build-unleash:
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
@@ -23,15 +47,7 @@ jobs:
       - image: circleci/openjdk:8-jdk-stretch
     steps:
       - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "unleash/build.gradle" }}
-      - run:
-          name: Download Dependencies
-          command: ./gradlew unleash:dependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum "unleash/build.gradle" }}
+      - download_cache_dependencies_unleash
       - run: ./gradlew clean unleash:test unleash:assemble
       - store_artifacts:
           path: unleash/build/libs/unleash.jar
@@ -57,7 +73,10 @@ jobs:
 workflows:
   unleash-workflow:
     jobs:
-      - build-unleash
+      - detekt-unleash
+      - build-unleash:
+          requires:
+            - detekt-unleash
       - detekt-sample:
           requires:
             - build-unleash
