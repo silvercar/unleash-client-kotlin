@@ -88,7 +88,11 @@ public class FeatureToggleRepositoryTest {
 
     @Test
     public void get_feature_names_should_return_list_of_names() {
-        UnleashConfig config = mock(UnleashConfig.class);
+        UnleashConfig config = new UnleashConfig.Builder()
+                .appName("test")
+                .unleashAPI("http://localhost:4242/api/")
+                .environment("test")
+                .build();
         UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
         ToggleFetcher toggleFetcher = mock(ToggleFetcher.class);
 
