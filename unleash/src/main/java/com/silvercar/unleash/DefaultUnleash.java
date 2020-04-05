@@ -10,7 +10,6 @@ import java.util.function.BiFunction;
 import com.silvercar.unleash.event.EventDispatcher;
 import com.silvercar.unleash.event.ToggleEvaluated;
 import com.silvercar.unleash.metric.UnleashMetricService;
-import com.silvercar.unleash.metric.UnleashMetricServiceImpl;
 import com.silvercar.unleash.repository.FeatureToggleRepository;
 import com.silvercar.unleash.repository.HttpToggleFetcher;
 import com.silvercar.unleash.repository.ToggleBackupHandlerFile;
@@ -59,7 +58,7 @@ public final class DefaultUnleash implements Unleash {
         this.strategyMap = buildStrategyMap(strategies);
         this.contextProvider = unleashConfig.getContextProvider();
         this.eventDispatcher = new EventDispatcher(unleashConfig);
-        this.metricService = new UnleashMetricServiceImpl(unleashConfig, unleashConfig.getScheduledExecutor());
+        this.metricService = new UnleashMetricService(unleashConfig, unleashConfig.getScheduledExecutor());
         metricService.register(strategyMap.keySet());
     }
 
