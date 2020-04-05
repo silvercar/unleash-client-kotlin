@@ -18,8 +18,9 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class UnleashMetricServiceImplTest {
+public class UnleashMetricServiceTest {
 
     @Test
     public void should_register_future_for_sending_interval_regualry() {
@@ -31,7 +32,7 @@ public class UnleashMetricServiceImplTest {
                 .unleashAPI("http://unleash.com")
                 .build();
         UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
-        UnleashMetricService unleashMetricService = new UnleashMetricServiceImpl(config, executor);
+        new UnleashMetricService(config, executor);
 
         verify(executor, times(1)).setInterval(any(Runnable.class), eq(interval), eq(interval));
     }
@@ -49,7 +50,8 @@ public class UnleashMetricServiceImplTest {
         UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
         UnleashMetricsSender sender = mock(UnleashMetricsSender.class);
 
-        UnleashMetricService unleashMetricService = new UnleashMetricServiceImpl(config, sender, executor);
+        UnleashMetricService
+            unleashMetricService = new UnleashMetricService(config, sender, executor);
         Set<String> strategies = new HashSet<>();
         strategies.add("default");
         strategies.add("custom");
@@ -60,6 +62,8 @@ public class UnleashMetricServiceImplTest {
         verify(sender).registerClient(argument.capture());
         assertThat(argument.getValue().getAppName(), is(config.getAppName()));
         assertThat(argument.getValue().getInstanceId(), is(config.getInstanceId()));
+        assertThat(argument.getValue().getSdkVersion(), is(config.getSdkVersion()));
+        assertThat(argument.getValue().getInterval(), is(config.getSendMetricsInterval()));
         assertThat(argument.getValue().getStarted(), is(not(IsNull.nullValue())));
         assertThat(argument.getValue().getStrategies().size(), is(2));
         assertTrue(argument.getValue().getStrategies().contains("default"));
@@ -79,7 +83,7 @@ public class UnleashMetricServiceImplTest {
         UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
         UnleashMetricsSender sender = mock(UnleashMetricsSender.class);
 
-        UnleashMetricService unleashMetricService = new UnleashMetricServiceImpl(config, sender, executor);
+        new UnleashMetricService(config, sender, executor);
 
         ArgumentCaptor<Runnable> sendMetricsCallback = ArgumentCaptor.forClass(Runnable.class);
         verify(executor).setInterval(sendMetricsCallback.capture(), anyLong(), anyLong());
@@ -101,7 +105,8 @@ public class UnleashMetricServiceImplTest {
         UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
         UnleashMetricsSender sender = mock(UnleashMetricsSender.class);
 
-        UnleashMetricService unleashMetricService = new UnleashMetricServiceImpl(config, sender, executor);
+        UnleashMetricService
+            unleashMetricService = new UnleashMetricService(config, sender, executor);
         unleashMetricService.count("someToggle", true);
         unleashMetricService.count("someToggle", false);
         unleashMetricService.count("someToggle", true);
@@ -124,8 +129,8 @@ public class UnleashMetricServiceImplTest {
         assertNotNull(bucket.getStart());
         assertNotNull(bucket.getStop());
         assertThat(bucket.getToggles().size(), is(2));
-        assertThat(bucket.getToggles().get("someToggle").getYes(), is(2l));
-        assertThat(bucket.getToggles().get("someToggle").getNo(), is(1l));
+        assertThat(bucket.getToggles().get("someToggle").getYes(), is(2L));
+        assertThat(bucket.getToggles().get("someToggle").getNo(), is(1L));
     }
 
     @Test
@@ -140,7 +145,8 @@ public class UnleashMetricServiceImplTest {
         UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
         UnleashMetricsSender sender = mock(UnleashMetricsSender.class);
 
-        UnleashMetricService unleashMetricService = new UnleashMetricServiceImpl(config, sender, executor);
+        UnleashMetricService
+            unleashMetricService = new UnleashMetricService(config, sender, executor);
         unleashMetricService.countVariant("someToggle", "v1");
         unleashMetricService.countVariant("someToggle", "v1");
         unleashMetricService.countVariant("someToggle", "v1");
@@ -164,11 +170,11 @@ public class UnleashMetricServiceImplTest {
         assertNotNull(bucket.getStart());
         assertNotNull(bucket.getStop());
         assertThat(bucket.getToggles().size(), is(1));
-        assertThat(bucket.getToggles().get("someToggle").getVariants().get("v1").longValue(), is(3l));
-        assertThat(bucket.getToggles().get("someToggle").getVariants().get("v2").longValue(), is(1l));
-        assertThat(bucket.getToggles().get("someToggle").getVariants().get("disabled").longValue(), is(1l));
-        assertThat(bucket.getToggles().get("someToggle").getYes(), is(0l));
-        assertThat(bucket.getToggles().get("someToggle").getNo(), is(0l));
+        assertThat(bucket.getToggles().get("someToggle").getVariants().get("v1").longValue(), is(3L));
+        assertThat(bucket.getToggles().get("someToggle").getVariants().get("v2").longValue(), is(1L));
+        assertThat(bucket.getToggles().get("someToggle").getVariants().get("disabled").longValue(), is(1L));
+        assertThat(bucket.getToggles().get("someToggle").getYes(), is(0L));
+        assertThat(bucket.getToggles().get("someToggle").getNo(), is(0L));
     }
 
 }

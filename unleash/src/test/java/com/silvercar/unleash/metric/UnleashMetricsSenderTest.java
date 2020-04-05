@@ -7,6 +7,8 @@ import com.github.jenspiegsa.mockitoextension.WireMockSettings;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.Options;
 import com.silvercar.unleash.util.UnleashConfig;
+import java.util.Calendar;
+import java.util.TimeZone;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -39,8 +41,9 @@ public class UnleashMetricsSenderTest {
         URI uri = new URI("http://localhost:"+serverMock.port());
         UnleashConfig config = UnleashConfig.builder().appName("test-app").unleashAPI(uri).build();
 
-        UnleashMetricsSender sender = new UnleashMetricsSender(config);
-        sender.registerClient(new ClientRegistration(config, LocalDateTime.now(), new HashSet<String>()));
+        final UnleashMetricsSender sender = new UnleashMetricsSender(config);
+        final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+        sender.registerClient(new ClientRegistration(config, calendar.getTime(), new HashSet<>()));
 
         verify(postRequestedFor(urlMatching("/client/register"))
                 .withRequestBody(matching(".*appName.*"))
