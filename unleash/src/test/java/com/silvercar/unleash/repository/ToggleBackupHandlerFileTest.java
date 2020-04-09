@@ -22,13 +22,12 @@ public class ToggleBackupHandlerFileTest {
         UnleashConfig config = UnleashConfig.builder()
                 .appName("test")
                 .unleashAPI("http://http://unleash.org")
-                .backupFile(getClass().getResource("/unleash-repo-v0.json").getFile())
+                .backupFile(getClass().getResource("/unleash-repo-v1.json").getFile())
                 .build();
         ToggleBackupHandlerFile toggleBackupHandlerFile = new ToggleBackupHandlerFile(config);
         ToggleCollection toggleCollection = toggleBackupHandlerFile.read();
 
-        assertNotNull(toggleCollection.getToggle("presentFeature"),
-                "presentFeature should be present");
+        assertNotNull(toggleCollection.getToggle("featureX"), "featureX should be present");
     }
 
     @Test
@@ -69,28 +68,13 @@ public class ToggleBackupHandlerFileTest {
 
         String staticData = "{\"features\": [{\"name\": \"writableFeature\",\"enabled\": true,\"strategy\": \"default\"}]}";
         Reader staticReader = new StringReader(staticData);
-        ToggleCollection toggleCollection = JsonToggleParser.fromJson(staticReader);
+        ToggleCollection toggleCollection = new JsonToggleParser().fromJson(staticReader);
 
         ToggleBackupHandlerFile toggleBackupHandlerFile = new ToggleBackupHandlerFile(config);
         toggleBackupHandlerFile.write(toggleCollection);
         toggleBackupHandlerFile = new ToggleBackupHandlerFile(config);
         toggleCollection = toggleBackupHandlerFile.read();
         assertNotNull(toggleCollection.getToggle("writableFeature"), "writableFeature should be present");
-    }
-
-    @Test
-    public void test_read_old_format_with_strategies() {
-        UnleashConfig config = UnleashConfig.builder()
-                .appName("test")
-                .unleashAPI("http://unleash.org")
-                .backupFile(getClass().getResource("/unleash-repo-v0.json").getFile())
-                .build();
-
-        ToggleBackupHandlerFile toggleBackupHandlerFile = new ToggleBackupHandlerFile(config);
-        ToggleCollection toggleCollection = toggleBackupHandlerFile.read();
-        assertNotNull(toggleCollection.getToggle("featureCustomStrategy"), "presentFeature should be present");
-        assertEquals(toggleCollection.getToggle("featureCustomStrategy").getStrategies().size(), 1, "should have 1 strategy");
-        assertEquals(toggleCollection.getToggle("featureCustomStrategy").getStrategies().get(0).getParameters().get("customParameter"), "customValue");
     }
 
     @Test
@@ -106,7 +90,7 @@ public class ToggleBackupHandlerFileTest {
 
         String staticData = "{\"features\": [{\"name\": \"writableFeature\",\"enabled\": false,\"strategy\": \"default\"}]}";
         Reader staticReader = new StringReader(staticData);
-        ToggleCollection toggleCollection = JsonToggleParser.fromJson(staticReader);
+        ToggleCollection toggleCollection = new JsonToggleParser().fromJson(staticReader);
 
         ToggleBackupHandlerFile toggleBackupHandlerFile = new ToggleBackupHandlerFile(config);
 

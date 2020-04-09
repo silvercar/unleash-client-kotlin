@@ -23,11 +23,12 @@ public class FeatureToggleRepositoryTest {
     public void no_backup_file_and_no_repository_available_should_give_empty_repo() {
         UnleashConfig config = UnleashConfig.builder()
                 .appName("test")
-                .unleashAPI("http://localhost:4242/api/").build();
+                .unleashAPI("http://localhost:4242/api/")
+                .scheduledExecutor(mock(UnleashScheduledExecutor.class))
+                .build();
         ToggleFetcher toggleFetcher = new HttpToggleFetcher(config);
         ToggleBackupHandler toggleBackupHandler = new ToggleBackupHandlerFile(config);
-        UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
-        ToggleRepository toggleRepository = new FeatureToggleRepository(config, executor, toggleFetcher, toggleBackupHandler);
+        ToggleRepository toggleRepository = new FeatureToggleRepository(config, toggleFetcher, toggleBackupHandler);
         assertNull(toggleRepository.getToggle("unknownFeature"), "should be null");
     }
 
@@ -37,12 +38,12 @@ public class FeatureToggleRepositoryTest {
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .fetchTogglesInterval(Long.MAX_VALUE)
+                .scheduledExecutor(mock(UnleashScheduledExecutor.class))
                 .build();
 
         ToggleBackupHandler toggleBackupHandler = mock(ToggleBackupHandler.class);
         ToggleFetcher toggleFetcher = mock(ToggleFetcher.class);
-        UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
-        new FeatureToggleRepository(config, executor, toggleFetcher, toggleBackupHandler);
+        new FeatureToggleRepository(config, toggleFetcher, toggleBackupHandler);
 
         verify(toggleBackupHandler, times(1)).read();
     }
@@ -60,7 +61,7 @@ public class FeatureToggleRepositoryTest {
         //setup fetcher
         toggleCollection = populatedToggleCollection(
                 new FeatureToggle("toggleFetcherCalled", true, Arrays.asList(new ActivationStrategy("custom", null))));
-        FeatureToggleResponse response = new FeatureToggleResponse(FeatureToggleResponse.Status.CHANGED, toggleCollection);
+        FeatureToggleResponse response = new FeatureToggleResponse(FeatureToggleResponse.Status.CHANGED, 200, toggleCollection, null);
         when(toggleFetcher.fetchToggles()).thenReturn(response);
 
         //init
@@ -72,9 +73,10 @@ public class FeatureToggleRepositoryTest {
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .fetchTogglesInterval(200l)
+                .scheduledExecutor(executor)
                 .build();
 
-        ToggleRepository toggleRepository = new FeatureToggleRepository(config, executor, toggleFetcher, toggleBackupHandler);
+        ToggleRepository toggleRepository = new FeatureToggleRepository(config, toggleFetcher, toggleBackupHandler);
 
         //run the toggleName fetcher callback
         verify(executor).setInterval(runnableArgumentCaptor.capture(), anyLong(), anyLong());
@@ -92,8 +94,8 @@ public class FeatureToggleRepositoryTest {
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .environment("test")
+                .scheduledExecutor(mock(UnleashScheduledExecutor.class))
                 .build();
-        UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
         ToggleFetcher toggleFetcher = mock(ToggleFetcher.class);
 
         ToggleBackupHandler toggleBackupHandler = mock(ToggleBackupHandler.class);
@@ -103,7 +105,7 @@ public class FeatureToggleRepositoryTest {
         );
         when(toggleBackupHandler.read()).thenReturn(toggleCollection);
 
-        ToggleRepository toggleRepository = new FeatureToggleRepository(config, executor, toggleFetcher, toggleBackupHandler);
+        ToggleRepository toggleRepository = new FeatureToggleRepository(config, toggleFetcher, toggleBackupHandler);
         assertTrue(2 == toggleRepository.getFeatureNames().size());
         assertTrue("toggleFeatureName2".equals(toggleRepository.getFeatureNames().get(1)));
     }
@@ -114,6 +116,7 @@ public class FeatureToggleRepositoryTest {
                 .synchronousFetchOnInitialisation(true)
                 .appName("test-sync-update")
                 .unleashAPI("http://localhost:8080")
+                .scheduledExecutor(mock(UnleashScheduledExecutor.class))
                 .build();
         UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
         ToggleFetcher toggleFetcher = mock(ToggleFetcher.class);
@@ -121,10 +124,10 @@ public class FeatureToggleRepositoryTest {
 
         //setup fetcher
         ToggleCollection toggleCollection = populatedToggleCollection();
-        FeatureToggleResponse response = new FeatureToggleResponse(FeatureToggleResponse.Status.CHANGED, toggleCollection);
+        FeatureToggleResponse response = new FeatureToggleResponse(FeatureToggleResponse.Status.CHANGED, 200, toggleCollection, null);
         when(toggleFetcher.fetchToggles()).thenReturn(response);
 
-        new FeatureToggleRepository(config, executor, toggleFetcher, toggleBackupHandler);
+        new FeatureToggleRepository(config, toggleFetcher, toggleBackupHandler);
 
         verify(toggleFetcher, times(1)).fetchToggles();
     }
@@ -135,17 +138,17 @@ public class FeatureToggleRepositoryTest {
                 .synchronousFetchOnInitialisation(false)
                 .appName("test-sync-update")
                 .unleashAPI("http://localhost:8080")
+                .scheduledExecutor(mock(UnleashScheduledExecutor.class))
                 .build();
-        UnleashScheduledExecutor executor = mock(UnleashScheduledExecutor.class);
         ToggleFetcher toggleFetcher = mock(ToggleFetcher.class);
         ToggleBackupHandler toggleBackupHandler = mock(ToggleBackupHandler.class);
 
         //setup fetcher
         ToggleCollection toggleCollection = populatedToggleCollection();
-        FeatureToggleResponse response = new FeatureToggleResponse(FeatureToggleResponse.Status.CHANGED, toggleCollection);
+        FeatureToggleResponse response = new FeatureToggleResponse(FeatureToggleResponse.Status.CHANGED, 200, toggleCollection, null);
         when(toggleFetcher.fetchToggles()).thenReturn(response);
 
-        new FeatureToggleRepository(config, executor, toggleFetcher, toggleBackupHandler);
+        new FeatureToggleRepository(config, toggleFetcher, toggleBackupHandler);
 
         verify(toggleFetcher, times(0)).fetchToggles();
     }
