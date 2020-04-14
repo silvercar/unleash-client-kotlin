@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentMap
 
 class MetricsBucket internal constructor() {
   @Transient private val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"))
-  val toggles: ConcurrentMap<String, ToggleCount> = ConcurrentHashMap()
+  val toggles = ConcurrentHashMap<String, ToggleCount>()
   val start: Date
 
   @Volatile var stop: Date? = null

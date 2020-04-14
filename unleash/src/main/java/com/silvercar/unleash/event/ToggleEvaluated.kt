@@ -1,6 +1,6 @@
 package com.silvercar.unleash.event
 
-class ToggleEvaluated(
+data class ToggleEvaluated(
   val toggleName: String,
   val isEnabled: Boolean
 ) : UnleashEvent {

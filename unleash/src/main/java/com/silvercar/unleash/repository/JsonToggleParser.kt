@@ -4,6 +4,7 @@ import java.io.Reader
 
 internal class JsonToggleParser {
   private val gsonFactory = GsonFactory
+
   fun toJsonString(toggleCollection: ToggleCollection?): String {
     return gsonFactory.getInstance().toJson(toggleCollection)
   }

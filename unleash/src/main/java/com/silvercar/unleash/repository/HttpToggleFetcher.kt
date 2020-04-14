@@ -16,7 +16,7 @@ import kotlin.text.Charsets.UTF_8
 class HttpToggleFetcher(private val unleashConfig: UnleashConfig) : ToggleFetcher {
   private var eTag = ""
   private val toggleUrl: URL = unleashConfig.unleashURLs.fetchTogglesURL
-  private val jsonToggleParser: JsonToggleParser = JsonToggleParser()
+  private val jsonToggleParser = JsonToggleParser()
 
   @Throws(UnleashException::class)
   override fun fetchToggles(): FeatureToggleResponse {

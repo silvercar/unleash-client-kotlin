@@ -12,7 +12,7 @@ class FeatureToggleRepository(
   private val toggleFetcher: ToggleFetcher,
   private val toggleBackupHandler: ToggleBackupHandler
 ) : ToggleRepository {
-  private val eventDispatcher: EventDispatcher = EventDispatcher(unleashConfig)
+  private val eventDispatcher = EventDispatcher(unleashConfig)
   private var toggleCollection: ToggleCollection
   private var ready = false
 
