@@ -5,13 +5,13 @@ import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.atomic.AtomicLong
 
 class ToggleCount {
-  private val _yes: AtomicLong = AtomicLong(0)
-  private val _no: AtomicLong = AtomicLong(0)
-  val variants: ConcurrentMap<String, AtomicLong?> = ConcurrentHashMap()
+  val variants = ConcurrentHashMap<String, AtomicLong?>()
 
+  private val _yes = AtomicLong(0)
   val yes: Long
     get() = _yes.get()
 
+  private val _no = AtomicLong(0)
   val no: Long
     get() = _no.get()
 

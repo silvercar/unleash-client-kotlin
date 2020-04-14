@@ -1,6 +1,5 @@
 package com.silvercar.unleash.metric
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.silvercar.unleash.UnleashException
 import com.silvercar.unleash.event.EventDispatcher
@@ -13,17 +12,11 @@ import java.util.Date
 import java.util.concurrent.atomic.AtomicLong
 
 class UnleashMetricsSender(private val unleashConfig: UnleashConfig) {
-  private val gson: Gson = GsonBuilder()
-    .registerTypeAdapter(
-      Date::class.java,
-      DateSerializer()
-    )
-    .registerTypeAdapter(
-      AtomicLong::class.java,
-      AtomicLongSerializer()
-    )
+  private val gson = GsonBuilder()
+    .registerTypeAdapter(Date::class.java, DateSerializer())
+    .registerTypeAdapter(AtomicLong::class.java, AtomicLongSerializer())
     .create()
-  private val eventDispatcher: EventDispatcher = EventDispatcher(unleashConfig)
+  private val eventDispatcher = EventDispatcher(unleashConfig)
   private val clientRegistrationURL: URL = unleashConfig.unleashURLs.clientRegisterURL
   private val clientMetricsURL: URL = unleashConfig.unleashURLs.clientMetricsURL
 

@@ -14,7 +14,7 @@ data class VariantDefinition(
   val payload: Payload?,
   private val overrides: List<VariantOverride>?
 ) {
-  // TODO: Investigate why a Unit Test fails when this is a property
+  // Json can return overrides as null so this ensures safe access
   fun getOverrides(): List<VariantOverride> {
     return overrides ?: emptyList()
   }

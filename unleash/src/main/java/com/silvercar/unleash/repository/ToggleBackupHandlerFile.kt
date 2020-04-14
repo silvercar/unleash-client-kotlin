@@ -15,7 +15,7 @@ import java.io.IOException
 
 class ToggleBackupHandlerFile(config: UnleashConfig) : ToggleBackupHandler {
   private val backupFile: String = config.backupFile
-  private val eventDispatcher: EventDispatcher = EventDispatcher(config)
+  private val eventDispatcher = EventDispatcher(config)
 
   override fun read(): ToggleCollection {
     LOG.info("Unleash will try to load feature toggle states from temporary backup")
