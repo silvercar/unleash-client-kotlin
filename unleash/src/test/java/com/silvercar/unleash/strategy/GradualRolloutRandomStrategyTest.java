@@ -7,6 +7,7 @@ import java.util.Random;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static com.silvercar.unleash.strategy.Strategy.PERCENTAGE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,7 +20,7 @@ public final class GradualRolloutRandomStrategyTest {
     public static void setUp() {
         long seed = new Random().nextLong();
         System.out.println("GradualRolloutRandomStrategyTest running with seed: " + seed);
-        gradualRolloutRandomStrategy = new GradualRolloutRandomStrategy(seed);
+        gradualRolloutRandomStrategy = new GradualRolloutRandomStrategy(new Random(seed));
     }
 
     @Test
@@ -34,7 +35,7 @@ public final class GradualRolloutRandomStrategyTest {
     @Test
     public void should_not_be_enabled_when_percentage_is_not_a_not_a_number() {
         final Map<String, String> parameters = new HashMap<String, String>() {{
-            put("percentage", "foo");
+            put(PERCENTAGE, "foo");
         }};
 
         final boolean enabled = gradualRolloutRandomStrategy.isEnabled(parameters);
@@ -45,7 +46,7 @@ public final class GradualRolloutRandomStrategyTest {
     @Test
     public void should_not_be_enabled_when_percentage_is_not_a_not_a_valid_percentage_value() {
         final Map<String, String> parameters = new HashMap<String, String>() {{
-            put("percentage", "ab");
+            put(PERCENTAGE, "ab");
         }};
 
         final boolean enabled = gradualRolloutRandomStrategy.isEnabled(parameters);
@@ -56,7 +57,7 @@ public final class GradualRolloutRandomStrategyTest {
     @Test
     public void should_never_be_enabled_when_0_percent() {
         final Map<String, String> parameters = new HashMap<String, String>() {{
-            put("percentage", "0");
+            put(PERCENTAGE, "0");
         }};
 
         for (int i = 0; i < 1000; i++) {
@@ -69,7 +70,7 @@ public final class GradualRolloutRandomStrategyTest {
     @Test
     public void should_always_be_enabled_when_100_percent() {
         final Map<String, String> parameters = new HashMap<String, String>() {{
-            put("percentage", "100");
+            put(PERCENTAGE, "100");
         }};
 
         for (int i = 0; i <= 100; i++) {
@@ -85,7 +86,7 @@ public final class GradualRolloutRandomStrategyTest {
         final int max = percentage + 1;
 
         final Map<String, String> parameters = new HashMap<String, String>() {{
-            put("percentage", ""+percentage);
+            put(PERCENTAGE, ""+percentage);
         }};
 
         int rounds = 20000;

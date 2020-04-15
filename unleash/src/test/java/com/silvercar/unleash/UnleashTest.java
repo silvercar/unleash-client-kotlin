@@ -1,5 +1,11 @@
 package com.silvercar.unleash;
 
+import com.silvercar.unleash.repository.ToggleRepository;
+import com.silvercar.unleash.strategy.Strategy;
+import com.silvercar.unleash.strategy.UserWithIdStrategy;
+import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.variant.Payload;
+import com.silvercar.unleash.variant.VariantDefinition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,28 +13,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-
-import com.silvercar.unleash.repository.ToggleRepository;
-import com.silvercar.unleash.strategy.Strategy;
-import com.silvercar.unleash.strategy.UserWithIdStrategy;
-import com.silvercar.unleash.util.UnleashConfig;
-
-import com.silvercar.unleash.variant.Payload;
-import com.silvercar.unleash.variant.VariantDefinition;
-import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class UnleashTest {
 
@@ -139,7 +141,7 @@ public class UnleashTest {
 
         unleash.isEnabled("test");
 
-        verify(customStrategy, times(1)).isEnabled(isNull(), any(UnleashContext.class), any(List.class));
+        verify(customStrategy, times(1)).isEnabled(any(Map.class), any(UnleashContext.class));
     }
 
     @Test
@@ -413,6 +415,130 @@ public class UnleashTest {
         assertThat(unleash.isEnabled("test"), is(false));
     }
 
+    @Test public void should_be_enabled_for_empty_constraints() {
+        final ActivationStrategy activeStrategy =
+            new ActivationStrategy("default", null, new ArrayList<>());
+
+        final FeatureToggle featureToggle = new FeatureToggle("test", true,
+            Collections.singletonList(activeStrategy));
+        when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
+
+        final boolean result = unleash.isEnabled("test");
+
+        assertTrue(result);
+    }
+
+    @Test public void should_be_enabled_for_null_constraints() {
+        final ActivationStrategy activeStrategy =
+            new ActivationStrategy("default", null, null);
+
+        final FeatureToggle featureToggle = new FeatureToggle("test", true,
+            Collections.singletonList(activeStrategy));
+        when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
+
+        final boolean result = unleash.isEnabled("test");
+
+        assertTrue(result);
+    }
+
+    @Test public void should_be_disabled_when_constraint_not_satisfied() {
+        final List<Constraint> constraints = new ArrayList<>();
+        constraints.add(new Constraint("environment", Operator.IN,
+            Collections.singletonList("prod")));
+
+        final ActivationStrategy activeStrategy =
+            new ActivationStrategy("default", null, constraints);
+
+        final FeatureToggle featureToggle = new FeatureToggle("test", true,
+            Collections.singletonList(activeStrategy));
+        when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
+
+        final boolean result = unleash.isEnabled("test");
+
+        assertFalse(result);
+    }
+
+    @Test public void should_be_enabled_when_constraint_is_satisfied() {
+        final List<Constraint> constraints = new ArrayList<>();
+        constraints.add(new Constraint("environment", Operator.IN, Arrays.asList("test", "prod")));
+
+        final ActivationStrategy activeStrategy =
+            new ActivationStrategy("default", null, constraints);
+
+        final FeatureToggle featureToggle = new FeatureToggle("test", true,
+            Collections.singletonList(activeStrategy));
+        when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
+
+        final boolean result = unleash.isEnabled("test");
+
+        assertTrue(result);
+    }
+
+    @Test public void should_be_enabled_when_constraint_NOT_IN_satisfied() {
+        final List<Constraint> constraints = new ArrayList<>();
+        constraints.add(new Constraint("environment", Operator.NOT_IN,
+            Collections.singletonList("prod")));
+
+        final ActivationStrategy activeStrategy =
+            new ActivationStrategy("default", null, constraints);
+
+        final FeatureToggle featureToggle = new FeatureToggle("test", true,
+            Collections.singletonList(activeStrategy));
+        when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
+
+        final boolean result = unleash.isEnabled("test");
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void should_be_enabled_when_all_constraints_are_satisfied() {
+        final UnleashContext context = UnleashContext.builder()
+            .environment("test")
+            .userId("123")
+            .addProperty("customerId", "blue")
+            .build();
+
+        final List<Constraint> constraints = new ArrayList<>();
+        constraints.add(new Constraint("environment", Operator.IN, Arrays.asList("test", "prod")));
+        constraints.add(new Constraint("userId", Operator.IN, Arrays.asList("123")));
+        constraints.add(new Constraint("customerId", Operator.IN, Arrays.asList("red", "blue")));
+
+        final ActivationStrategy activeStrategy =
+            new ActivationStrategy("default", null, constraints);
+
+        final FeatureToggle featureToggle = new FeatureToggle("test", true,
+            Collections.singletonList(activeStrategy));
+        when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
+
+        final boolean result = unleash.isEnabled("test", context);
+
+        assertTrue(result);
+    }
+
+    @Test public void should_be_disabled_when_not_all_constraints_are_satisfied() {
+        final UnleashContext context = UnleashContext.builder()
+            .environment("test")
+            .userId("123")
+            .addProperty("customerId", "orange")
+            .build();
+
+        final List<Constraint> constraints = new ArrayList<>();
+        constraints.add(new Constraint("environment", Operator.IN, Arrays.asList("test", "prod")));
+        constraints.add(new Constraint("userId", Operator.IN, Arrays.asList("123")));
+        constraints.add(new Constraint("customerId", Operator.IN, Arrays.asList("red", "blue")));
+
+        final ActivationStrategy activeStrategy =
+            new ActivationStrategy("default", null, constraints);
+
+        final FeatureToggle featureToggle = new FeatureToggle("test", true,
+            Collections.singletonList(activeStrategy));
+        when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
+
+        final boolean result = unleash.isEnabled("test", context);
+
+        assertFalse(result);
+    }
 
     private List<VariantDefinition> getTestVariants() {
         return asList(

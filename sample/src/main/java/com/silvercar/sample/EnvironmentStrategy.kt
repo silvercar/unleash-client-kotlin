@@ -3,12 +3,11 @@ package com.silvercar.sample
 import com.silvercar.unleash.strategy.Strategy
 
 class EnvironmentStrategy : Strategy {
-  override fun isEnabled(parameters: MutableMap<String, String>?): Boolean {
-    return "qa" == parameters?.get(PARAMETER) ?: ""
-  }
+  override val name: String
+    get() = NAME
 
-  override fun getName(): String {
-    return NAME
+  override fun isEnabled(parameters: Map<String, String>): Boolean {
+    return "qa" == parameters.get(PARAMETER) ?: ""
   }
 
   companion object {

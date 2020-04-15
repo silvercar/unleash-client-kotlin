@@ -24,7 +24,7 @@ public final class ActivationStrategy {
     }
 
     public Map<String, String> getParameters() {
-        return parameters;
+        return parameters != null ? parameters : Collections.emptyMap();
     }
 
     public List<Constraint> getConstraints() {

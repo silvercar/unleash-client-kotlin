@@ -22,6 +22,7 @@ public class GradualRolloutUserIdStrategyTest {
     private static final long MIN = 10000000L;
     private static final long MAX = 9999999999L;
 
+    private StrategyUtils strategyUtils = new StrategyUtils();
     Random rand = new Random(SEED);
     List<Integer> percentages;
 
@@ -105,7 +106,7 @@ public class GradualRolloutUserIdStrategyTest {
     public void should_be_enabled_above_minimum_percentage() {
         String userId = "1574576830";
         String groupId = "";
-        int minimumPercentage = StrategyUtils.getNormalizedNumber(userId, groupId);
+        int minimumPercentage = strategyUtils.getNormalizedNumber(userId, groupId);
 
         UnleashContext context = UnleashContext.builder().userId(userId).build();
 

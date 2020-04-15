@@ -101,7 +101,7 @@ class RemoteAddressStrategyTest {
         }
         
         Map<String, String> parameters = new HashMap<>();
-        parameters.put(RemoteAddressStrategy.PARAM, ipString);
+        parameters.put(RemoteAddressStrategy.IPS_PARAM, ipString);
         return parameters;
     }
 }
