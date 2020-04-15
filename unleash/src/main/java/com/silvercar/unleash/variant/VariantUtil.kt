@@ -6,8 +6,9 @@ import com.silvercar.unleash.Variant
 import com.silvercar.unleash.strategy.StrategyUtils
 
 class VariantUtil {
-  @SuppressWarnings("ReturnCount")
-  fun selectVariant(
+  private val strategyUtils = StrategyUtils()
+
+  @SuppressWarnings("ReturnCount") fun selectVariant(
     featureToggle: FeatureToggle,
     context: UnleashContext,
     defaultVariant: Variant
@@ -22,7 +23,7 @@ class VariantUtil {
     variantOverride?.let {
       return it.toVariant()
     }
-    val target = StrategyUtils.getNormalizedNumber(
+    val target = strategyUtils.getNormalizedNumber(
         getIdentifier(context),
         featureToggle.name,
         totalWeight

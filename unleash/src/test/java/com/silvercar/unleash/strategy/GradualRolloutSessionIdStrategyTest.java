@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import static com.silvercar.unleash.strategy.Strategy.GROUP_ID;
+import static com.silvercar.unleash.strategy.Strategy.PERCENTAGE;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,6 +24,7 @@ public class GradualRolloutSessionIdStrategyTest {
     private static final long MIN = 10000000L;
     private static final long MAX = 9999999999L;
 
+    private StrategyUtils strategyUtils = new StrategyUtils();
     Random rand = new Random(SEED);
     List<Integer> percentages;
 
@@ -105,7 +108,7 @@ public class GradualRolloutSessionIdStrategyTest {
     public void should_be_enabled_above_minimum_percentage() {
         String sessionId = "1574576830";
         String groupId = "";
-        int minimumPercentage = StrategyUtils.getNormalizedNumber(sessionId, groupId);
+        int minimumPercentage = strategyUtils.getNormalizedNumber(sessionId, groupId);
 
         UnleashContext context = UnleashContext.builder().sessionId(sessionId).build();
 
@@ -149,9 +152,9 @@ public class GradualRolloutSessionIdStrategyTest {
     }
 
     private Map<String, String> buildParams(int percentage, String groupId) {
-        Map<String, String> params = new HashMap();
-        params.put(GradualRolloutSessionIdStrategy.PERCENTAGE, String.valueOf(percentage));
-        params.put(GradualRolloutSessionIdStrategy.GROUP_ID, groupId);
+        Map<String, String> params = new HashMap<>();
+        params.put(PERCENTAGE, String.valueOf(percentage));
+        params.put(GROUP_ID, groupId);
 
         return params;
     }

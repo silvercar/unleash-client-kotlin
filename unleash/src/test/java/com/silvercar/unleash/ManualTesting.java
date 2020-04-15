@@ -18,15 +18,18 @@ import org.jetbrains.annotations.NotNull;
 public class ManualTesting {
     public static void main(String[] args) throws Exception {
         Strategy strategy = new Strategy() {
-            @Override
-            public String getName() {
+            @Override public String getName() {
                 return "ActiveForUserWithId";
             }
 
-            @Override
-            public boolean isEnabled(Map<String, String> parameters) {
+            @Override public boolean isEnabled(@NotNull Map<String, String> parameters) {
                 System.out.println("parameters = " + parameters);
                 return true;
+            }
+
+            @Override public boolean isEnabled(@NotNull Map<String, String> parameters,
+                @NotNull UnleashContext unleashContext) {
+                return isEnabled(parameters);
             }
         };
         UnleashConfig unleashConfig = new UnleashConfig.Builder()

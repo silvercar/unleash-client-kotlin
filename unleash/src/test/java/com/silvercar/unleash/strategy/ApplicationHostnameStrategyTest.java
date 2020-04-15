@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import static com.silvercar.unleash.strategy.ApplicationHostnameStrategy.HOST_NAMES_PARAM;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -22,7 +23,7 @@ public class ApplicationHostnameStrategyTest {
     public void should_be_disabled_if_no_HostNames_in_params() {
         Strategy strategy = new ApplicationHostnameStrategy();
         Map<String, String> params = new HashMap<>();
-        params.put("hostNames", null);
+        params.put(HOST_NAMES_PARAM, null);
 
         assertFalse(strategy.isEnabled(params));
     }
@@ -32,7 +33,7 @@ public class ApplicationHostnameStrategyTest {
         Strategy strategy = new ApplicationHostnameStrategy();
 
         Map<String, String> params = new HashMap<>();
-        params.put("hostNames", "MegaHost,MiniHost, happyHost");
+        params.put(HOST_NAMES_PARAM, "MegaHost,MiniHost, happyHost");
 
         assertFalse(strategy.isEnabled(params));
     }
@@ -45,7 +46,7 @@ public class ApplicationHostnameStrategyTest {
         Strategy strategy = new ApplicationHostnameStrategy();
 
         Map<String, String> params = new HashMap<>();
-        params.put("hostNames", "MegaHost," + hostName + ",MiniHost, happyHost");
+        params.put(HOST_NAMES_PARAM, "MegaHost," + hostName + ",MiniHost, happyHost");
         assertTrue(strategy.isEnabled(params));
     }
 
@@ -58,7 +59,7 @@ public class ApplicationHostnameStrategyTest {
 
         Map<String, String> params = new HashMap<>();
 
-        params.put("hostNames", "MegaHost," + hostName.toUpperCase() + ",MiniHost, happyHost");
+        params.put(HOST_NAMES_PARAM, "MegaHost," + hostName.toUpperCase() + ",MiniHost, happyHost");
         assertTrue(strategy.isEnabled(params));
     }
 
@@ -71,7 +72,7 @@ public class ApplicationHostnameStrategyTest {
 
         Map<String, String> params = new HashMap<>();
 
-        params.put("hostNames", "MegaHost, MiniHost, SuperhostOne");
+        params.put(HOST_NAMES_PARAM, "MegaHost, MiniHost, SuperhostOne");
         assertFalse(strategy.isEnabled(params));
     }
 
@@ -83,7 +84,7 @@ public class ApplicationHostnameStrategyTest {
         Strategy strategy = new ApplicationHostnameStrategy();
 
         Map<String, String> params = new HashMap<>();
-        params.put("hostNames", "MegaHost," + hostName + ",MiniHost, happyHost");
+        params.put(HOST_NAMES_PARAM, "MegaHost," + hostName + ",MiniHost, happyHost");
         assertTrue(strategy.isEnabled(params));
     }
 
@@ -95,7 +96,7 @@ public class ApplicationHostnameStrategyTest {
         Strategy strategy = new ApplicationHostnameStrategy();
 
         Map<String, String> params = new HashMap<>();
-        params.put("hostNames", "MegaHost," + hostName + ",MiniHost, happyHost");
+        params.put(HOST_NAMES_PARAM, "MegaHost," + hostName + ",MiniHost, happyHost");
         assertTrue(strategy.isEnabled(params));
     }
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.BiFunction;
 
 import com.silvercar.unleash.event.EventDispatcher;
@@ -24,12 +25,12 @@ import static com.silvercar.unleash.Variant.DISABLED_VARIANT;
 public final class DefaultUnleash implements Unleash {
     private static final List<Strategy> BUILTIN_STRATEGIES = Arrays.asList(new DefaultStrategy(),
             new ApplicationHostnameStrategy(),
-            new GradualRolloutRandomStrategy(),
+            new GradualRolloutRandomStrategy(new Random()),
             new GradualRolloutSessionIdStrategy(),
             new GradualRolloutUserIdStrategy(),
             new RemoteAddressStrategy(),
             new UserWithIdStrategy(),
-            new FlexibleRolloutStrategy());
+            new FlexibleRolloutStrategy(new RandomGenerator()));
 
     private static final UnknownStrategy UNKNOWN_STRATEGY = new UnknownStrategy();
 
@@ -103,7 +104,11 @@ public final class DefaultUnleash implements Unleash {
             return true;
         } else {
             enabled = featureToggle.getStrategies().stream()
-                    .anyMatch(as -> getStrategy(as.getName()).isEnabled(as.getParameters(), enhancedContext, as.getConstraints()));
+                    .anyMatch(as -> {
+                        final Strategy strategy = getStrategy(as.getName());
+                        return new ConstraintUtil().validate(as.getConstraints(), enhancedContext)
+                            && strategy.isEnabled(as.getParameters(), enhancedContext);
+                });
         }
         return enabled;
     }

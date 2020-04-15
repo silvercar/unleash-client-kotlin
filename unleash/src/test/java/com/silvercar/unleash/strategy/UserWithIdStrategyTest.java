@@ -30,7 +30,7 @@ public class UserWithIdStrategyTest {
         Map<String, String> parameters = new HashMap<>();
 
         UnleashContext context = UnleashContext.builder().userId("123").build();
-        parameters.put(strategy.PARAM, "123");
+        parameters.put(strategy.USER_IDS_PARAM, "123");
 
         assertTrue(strategy.isEnabled(parameters, context));
     }
@@ -40,7 +40,7 @@ public class UserWithIdStrategyTest {
         Map<String, String> parameters = new HashMap<>();
 
         UnleashContext context = UnleashContext.builder().userId("123").build();
-        parameters.put(strategy.PARAM, "123, 122, 121");
+        parameters.put(strategy.USER_IDS_PARAM, "123, 122, 121");
 
         assertTrue(strategy.isEnabled(parameters, context));
     }
@@ -50,7 +50,7 @@ public class UserWithIdStrategyTest {
         Map<String, String> parameters = new HashMap<>();
 
         UnleashContext context = UnleashContext.builder().userId("123").build();
-        parameters.put(strategy.PARAM, "123, 122, 121");
+        parameters.put(strategy.USER_IDS_PARAM, "123, 122, 121");
 
         assertTrue(strategy.isEnabled(parameters, context));
     }
@@ -60,7 +60,7 @@ public class UserWithIdStrategyTest {
         Map<String, String> parameters = new HashMap<>();
 
         UnleashContext context = UnleashContext.builder().userId("123").build();
-        parameters.put(strategy.PARAM, "123, 122, 121");
+        parameters.put(strategy.USER_IDS_PARAM, "123, 122, 121");
 
         assertTrue(strategy.isEnabled(parameters, context));
     }
@@ -70,7 +70,7 @@ public class UserWithIdStrategyTest {
         Map<String, String> parameters = new HashMap<>();
 
         UnleashContext context = UnleashContext.builder().userId("12").build();
-        parameters.put(strategy.PARAM, "123, 122, 121, 212");
+        parameters.put(strategy.USER_IDS_PARAM, "123, 122, 121, 212");
 
         assertFalse(strategy.isEnabled(parameters, context));
     }
@@ -80,7 +80,7 @@ public class UserWithIdStrategyTest {
         Map<String, String> parameters = new HashMap<>();
 
         UnleashContext context = UnleashContext.builder().userId("123").build();
-        parameters.put(strategy.PARAM, "123,122,121");
+        parameters.put(strategy.USER_IDS_PARAM, "123,122,121");
 
         assertTrue(strategy.isEnabled(parameters, context));
     }
@@ -90,7 +90,7 @@ public class UserWithIdStrategyTest {
         Map<String, String> parameters = new HashMap<>();
 
         UnleashContext context = UnleashContext.builder().userId("298261117").build();
-        parameters.put(strategy.PARAM,
+        parameters.put(strategy.USER_IDS_PARAM,
                 "160118738, 1823311338, 1422637466, 2125981185, 298261117, 1829486714, 463568019, 271166598");
 
         assertTrue(strategy.isEnabled(parameters, context));
@@ -101,7 +101,7 @@ public class UserWithIdStrategyTest {
         Map<String, String> parameters = new HashMap<>();
 
         UnleashContext context = UnleashContext.builder().userId("32667774").build();
-        parameters.put(strategy.PARAM,
+        parameters.put(strategy.USER_IDS_PARAM,
                 "160118738, 1823311338, 1422637466, 2125981185, 298261117, 1829486714, 463568019, 271166598");
 
         assertFalse(strategy.isEnabled(parameters, context));
@@ -111,7 +111,7 @@ public class UserWithIdStrategyTest {
     public void should_not_be_enabled_without_id() {
         Map<String, String> parameters = new HashMap<>();
 
-        parameters.put(strategy.PARAM, "160118738, 1823311338");
+        parameters.put(strategy.USER_IDS_PARAM, "160118738, 1823311338");
 
         assertFalse(strategy.isEnabled(parameters));
     }

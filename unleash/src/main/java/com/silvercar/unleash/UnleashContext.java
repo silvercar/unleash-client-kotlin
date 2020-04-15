@@ -65,14 +65,14 @@ public class UnleashContext {
         return environment;
     }
 
-    public Optional<String> getByName(String contextName) {
+    public String getByName(String contextName) {
         switch (contextName) {
-            case "environment": return environment;
-            case "appName": return appName;
-            case "userId": return userId;
-            case "sessionId": return sessionId;
-            case "remoteAddress": return remoteAddress;
-            default: return Optional.ofNullable(properties.get(contextName));
+            case "environment": return environment.isPresent() ? environment.get() : "";
+            case "appName": return appName.isPresent() ? appName.get() : "";
+            case "userId": return userId.isPresent() ? userId.get() : "";
+            case "sessionId": return sessionId.isPresent() ? sessionId.get() : "";
+            case "remoteAddress": return remoteAddress.isPresent() ? remoteAddress.get() : "";
+            default: return properties.get(contextName) != null ? properties.get(contextName) : "";
         }
     }
 
