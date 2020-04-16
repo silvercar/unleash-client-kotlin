@@ -2,7 +2,6 @@ package com.silvercar.unleash.util;
 
 import com.silvercar.unleash.CustomHttpHeadersProvider;
 import com.silvercar.unleash.DefaultCustomHttpHeadersProviderImpl;
-import com.silvercar.unleash.util.UnleashConfig.ProxyAuthenticator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -13,7 +12,6 @@ import java.net.*;
 import java.net.Authenticator.RequestorType;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.mockito.Mockito;
 
@@ -28,25 +26,25 @@ public class UnleashConfigTest {
 
     @Test
     public void should_require_unleasAPI_url() {
-        Executable ex = () -> UnleashConfig.builder().appName("test").build();
-        assertThrows(IllegalStateException.class, ex);
+        Executable ex = () -> new UnleashConfigBuilder().appName("test").build();
+        assertThrows(NullPointerException.class, ex);
     }
 
     @Test
     public void should_require_app_name() {
-        Executable ex = () -> UnleashConfig.builder().unleashAPI("http://unleash.com").build();
-        assertThrows(IllegalStateException.class, ex);
+        Executable ex = () -> new UnleashConfigBuilder().unleashAPI("http://unleash.com").build();
+        assertThrows(NullPointerException.class, ex);
     }
 
     @Test
     public void should_require_valid_uri() {
-        Executable ex = () -> UnleashConfig.builder().unleashAPI("this is not a uri").build();
+        Executable ex = () -> new UnleashConfigBuilder().unleashAPI("this is not a uri").build();
         assertThrows(IllegalArgumentException.class, ex);
     }
 
     @Test
     public void should_build_config() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("my-app")
                 .instanceId("my-instance-1")
                 .unleashAPI("http://unleash.org")
@@ -59,7 +57,7 @@ public class UnleashConfigTest {
 
     @Test
     public void should_generate_backupfile() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("my-app")
                 .unleashAPI("http://unleash.org")
                 .build();
@@ -70,7 +68,7 @@ public class UnleashConfigTest {
 
     @Test
     public void should_use_provided_backupfile() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("my-app")
                 .backupFile("/test/unleash-backup.json")
                 .unleashAPI("http://unleash.org")
@@ -82,7 +80,7 @@ public class UnleashConfigTest {
 
     @Test
     public void should_set_sdk_version() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("my-app")
                 .unleashAPI("http://unleash.org")
                 .build();
@@ -92,7 +90,7 @@ public class UnleashConfigTest {
 
     @Test
     public void should_set_environment_to_default() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("my-app")
                 .unleashAPI("http://unleash.org")
                 .build();
@@ -103,7 +101,7 @@ public class UnleashConfigTest {
     @Test
     public void should_set_environment() {
         String env = "prod";
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("my-app")
                 .environment(env)
                 .unleashAPI("http://unleash.org")
@@ -118,7 +116,7 @@ public class UnleashConfigTest {
         String instanceId = "my-instance-1";
         String unleashAPI = "http://unleash.org";
 
-        UnleashConfig unleashConfig = UnleashConfig.builder()
+        UnleashConfig unleashConfig = new UnleashConfigBuilder()
                 .appName(appName)
                 .instanceId(instanceId)
                 .unleashAPI(unleashAPI)
@@ -127,7 +125,7 @@ public class UnleashConfigTest {
         URL someUrl = new URL(unleashAPI + "/some/arbitrary/path");
         HttpURLConnection connection = (HttpURLConnection) someUrl.openConnection();
 
-        UnleashConfig.setRequestProperties(connection, unleashConfig);
+        unleashConfig.setRequestProperties(connection);
         assertThat(connection.getRequestProperty(UNLEASH_APP_NAME_HEADER), is(appName));
         assertThat(connection.getRequestProperty(UNLEASH_INSTANCE_ID_HEADER), is(instanceId));
         assertThat(connection.getRequestProperty("User-Agent"), is(appName));
@@ -139,7 +137,7 @@ public class UnleashConfigTest {
         String headerName = "UNLEASH-CUSTOM-TEST-HEADER";
         String headerValue = "Some value";
 
-        UnleashConfig unleashConfig = UnleashConfig.builder()
+        UnleashConfig unleashConfig = new UnleashConfigBuilder()
                 .appName("my-app")
                 .instanceId("my-instance-1")
                 .unleashAPI(unleashAPI)
@@ -149,7 +147,7 @@ public class UnleashConfigTest {
         URL someUrl = new URL(unleashAPI + "/some/arbitrary/path");
         HttpURLConnection connection = (HttpURLConnection) someUrl.openConnection();
 
-        UnleashConfig.setRequestProperties(connection, unleashConfig);
+        unleashConfig.setRequestProperties(connection);
         assertThat(connection.getRequestProperty(headerName), is(headerValue));
     }
 
@@ -161,7 +159,7 @@ public class UnleashConfigTest {
         CustomHttpHeadersProvider provider = Mockito.mock(DefaultCustomHttpHeadersProviderImpl.class);
         when(provider.getCustomHeaders()).thenReturn(result);
 
-        UnleashConfig unleashConfig = UnleashConfig.builder()
+        UnleashConfig unleashConfig = new UnleashConfigBuilder()
                 .appName("my-app")
                 .instanceId("my-instance-1")
                 .unleashAPI(unleashAPI)
@@ -171,7 +169,7 @@ public class UnleashConfigTest {
         URL someUrl = new URL(unleashAPI + "/some/arbitrary/path");
         HttpURLConnection connection = (HttpURLConnection) someUrl.openConnection();
 
-        UnleashConfig.setRequestProperties(connection, unleashConfig);
+        unleashConfig.setRequestProperties(connection);
 
         for (String key: result.keySet()) {
             assertThat(connection.getRequestProperty(key), is(result.get(key)));
@@ -180,13 +178,13 @@ public class UnleashConfigTest {
 
     @Test
     public void should_require_instanceId() {
-        Executable ex = () -> UnleashConfig.builder()
+        Executable ex = () -> new UnleashConfigBuilder()
                 .appName("my-app")
                 .instanceId(null)
                 .unleashAPI("http://unleash.org")
                 .build();
 
-        assertThrows(IllegalStateException.class, ex);
+        assertThrows(IllegalArgumentException.class, ex);
     }
 
     @Test
@@ -203,7 +201,7 @@ public class UnleashConfigTest {
         System.setProperty("http.proxyUser", proxyUser);
         System.setProperty("http.proxyPassword", proxyPassword);
 
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("my-app")
                 .unleashAPI("http://unleash.org")
                 .enableProxyAuthenticationByJvmProperties()

@@ -1,5 +1,6 @@
 package com.silvercar.unleash.repository;
 
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import java.io.*;
 import java.net.URISyntaxException;
 
@@ -19,7 +20,7 @@ public class ToggleBackupHandlerFileTest {
 
     @Test
     public void test_read() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://http://unleash.org")
                 .backupFile(getClass().getResource("/unleash-repo-v1.json").getFile())
@@ -32,7 +33,7 @@ public class ToggleBackupHandlerFileTest {
 
     @Test
     public void test_read_file_with_invalid_data() throws Exception {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://unleash.org")
                 .backupFile(getClass().getResource("/unleash-repo-without-feature-field.json").getFile())
@@ -44,7 +45,7 @@ public class ToggleBackupHandlerFileTest {
 
     @Test
     public void test_read_without_file() throws URISyntaxException {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://unleash.org")
                 .backupFile("/does/not/exist.json")
@@ -60,7 +61,7 @@ public class ToggleBackupHandlerFileTest {
     @Test
     public void test_write_strategies(){
         String backupFile = System.getProperty("java.io.tmpdir") + File.separatorChar + "unleash-repo-test-write.json";
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://unleash.org")
                 .backupFile(backupFile)
@@ -82,7 +83,7 @@ public class ToggleBackupHandlerFileTest {
         TestUtil.setLogLevel(Level.ERROR); //Mute warn messages.
 
         String backupFileIsDir = System.getProperty("java.io.tmpdir");
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://unleash.org")
                 .backupFile(backupFileIsDir)

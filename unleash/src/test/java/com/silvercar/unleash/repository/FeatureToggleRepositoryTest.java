@@ -3,6 +3,7 @@ package com.silvercar.unleash.repository;
 import com.silvercar.unleash.ActivationStrategy;
 import com.silvercar.unleash.FeatureToggle;
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import com.silvercar.unleash.util.UnleashScheduledExecutor;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -21,7 +22,7 @@ public class FeatureToggleRepositoryTest {
 
     @Test
     public void no_backup_file_and_no_repository_available_should_give_empty_repo() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .scheduledExecutor(mock(UnleashScheduledExecutor.class))
@@ -34,7 +35,7 @@ public class FeatureToggleRepositoryTest {
 
     @Test
     public void backup_toggles_should_be_loaded_at_startup() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .fetchTogglesInterval(Long.MAX_VALUE)
@@ -69,7 +70,7 @@ public class FeatureToggleRepositoryTest {
         ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass(Runnable.class);
 
 
-        UnleashConfig config = new UnleashConfig.Builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .fetchTogglesInterval(200l)
@@ -90,7 +91,7 @@ public class FeatureToggleRepositoryTest {
 
     @Test
     public void get_feature_names_should_return_list_of_names() {
-        UnleashConfig config = new UnleashConfig.Builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .environment("test")
@@ -112,7 +113,7 @@ public class FeatureToggleRepositoryTest {
 
     @Test
     public void should_perform_synchronous_fetch_on_initialisation() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .synchronousFetchOnInitialisation(true)
                 .appName("test-sync-update")
                 .unleashAPI("http://localhost:8080")
@@ -134,7 +135,7 @@ public class FeatureToggleRepositoryTest {
 
     @Test
     public void should_not_perform_synchronous_fetch_on_initialisation() {
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .synchronousFetchOnInitialisation(false)
                 .appName("test-sync-update")
                 .unleashAPI("http://localhost:8080")

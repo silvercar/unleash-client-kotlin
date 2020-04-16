@@ -4,6 +4,7 @@ import com.silvercar.unleash.DefaultUnleash;
 import com.silvercar.unleash.TestUtil;
 import com.silvercar.unleash.Unleash;
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ public class UnleashUsageTest {
     @Test
     public void wire() {
         TestUtil.setLogLevel(Level.ERROR); //Mute warn messages.
-        UnleashConfig config = new UnleashConfig.Builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .instanceId("my-hostname:6517")
                 .synchronousFetchOnInitialisation(true)

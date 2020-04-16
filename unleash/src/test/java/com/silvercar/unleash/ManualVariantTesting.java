@@ -1,5 +1,6 @@
 package com.silvercar.unleash;
 
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import java.util.Map;
 import java.util.Random;
 
@@ -25,7 +26,7 @@ public class ManualVariantTesting {
                 return isEnabled(parameters);
             }
         };
-        UnleashConfig unleashConfig = new UnleashConfig.Builder()
+        UnleashConfig unleashConfig = new UnleashConfigBuilder()
                 .appName("java-test")
                 .instanceId("instance y")
                 .unleashAPI("https://unleash.herokuapp.com/api/")
