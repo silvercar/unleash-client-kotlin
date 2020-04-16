@@ -1,5 +1,6 @@
 package com.silvercar.unleash.integration;
 
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -98,7 +99,7 @@ public class ClientSpecificationTest {
 
         // TODO: Determine why fetch interval causes tests to fail when debugging.
         // Set-up a unleash instance, using mocked API and backup-file
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName(testDefinition.getName())
                 .unleashAPI(new URI("http://localhost:" + serverMock.port() + "/api/"))
                 .synchronousFetchOnInitialisation(true)

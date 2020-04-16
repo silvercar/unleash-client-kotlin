@@ -5,6 +5,7 @@ import com.silvercar.unleash.event.UnleashEvent;
 import com.silvercar.unleash.event.UnleashSubscriber;
 import com.silvercar.unleash.metric.ClientMetrics;
 import com.silvercar.unleash.metric.ClientRegistration;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import java.util.Map;
 import java.util.Random;
 
@@ -32,7 +33,7 @@ public class ManualTesting {
                 return isEnabled(parameters);
             }
         };
-        UnleashConfig unleashConfig = new UnleashConfig.Builder()
+        UnleashConfig unleashConfig = new UnleashConfigBuilder()
                 .appName("java-test")
                 .instanceId("instance y")
                 .unleashAPI("https://unleash.herokuapp.com/api/")

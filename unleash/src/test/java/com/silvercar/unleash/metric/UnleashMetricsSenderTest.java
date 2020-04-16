@@ -7,6 +7,7 @@ import com.github.jenspiegsa.mockitoextension.WireMockSettings;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.Options;
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import java.util.Calendar;
 import java.util.TimeZone;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class UnleashMetricsSenderTest {
                 .willReturn(aResponse().withStatus(200)));
 
         URI uri = new URI("http://localhost:"+serverMock.port());
-        UnleashConfig config = UnleashConfig.builder().appName("test-app").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test-app").unleashAPI(uri).build();
 
         final UnleashMetricsSender sender = new UnleashMetricsSender(config);
         final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
@@ -58,7 +59,7 @@ public class UnleashMetricsSenderTest {
                 .willReturn(aResponse().withStatus(200)));
 
         URI uri = new URI("http://localhost:"+serverMock.port());
-        UnleashConfig config = UnleashConfig.builder().appName("test-app").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test-app").unleashAPI(uri).build();
 
         UnleashMetricsSender sender = new UnleashMetricsSender(config);
         MetricsBucket bucket = new MetricsBucket();
@@ -78,7 +79,7 @@ public class UnleashMetricsSenderTest {
                 .willReturn(aResponse().withStatus(500)));
 
         URI uri = new URI("http://localhost:"+serverMock.port());
-        UnleashConfig config = UnleashConfig.builder().appName("test-app").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test-app").unleashAPI(uri).build();
 
         UnleashMetricsSender sender = new UnleashMetricsSender(config);
         MetricsBucket bucket = new MetricsBucket();

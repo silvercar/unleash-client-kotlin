@@ -15,6 +15,7 @@ import com.silvercar.unleash.metric.ClientRegistration;
 import com.silvercar.unleash.repository.FeatureToggleResponse;
 import com.silvercar.unleash.repository.ToggleCollection;
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ public class SubscriberTest {
 
     @BeforeEach
     void setup() {
-        unleashConfig = new UnleashConfig.Builder()
+        unleashConfig = new UnleashConfigBuilder()
                 .appName(SubscriberTest.class.getSimpleName())
                 .instanceId(SubscriberTest.class.getSimpleName())
                 .synchronousFetchOnInitialisation(true)

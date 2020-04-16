@@ -4,6 +4,7 @@ import com.silvercar.unleash.repository.ToggleRepository;
 import com.silvercar.unleash.strategy.Strategy;
 import com.silvercar.unleash.strategy.UserWithIdStrategy;
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import com.silvercar.unleash.variant.Payload;
 import com.silvercar.unleash.variant.VariantDefinition;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class UnleashTest {
         contextProvider = mock(UnleashContextProvider.class);
         when(contextProvider.getContext()).thenReturn(UnleashContext.builder().build());
 
-        UnleashConfig config = new UnleashConfig.Builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .environment("test")
@@ -132,7 +133,7 @@ public class UnleashTest {
         when(customStrategy.getName()).thenReturn("custom");
 
         //register custom strategy
-        UnleashConfig config = new UnleashConfig.Builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .unleashAPI("http://localhost:4242/api/")
                 .build();

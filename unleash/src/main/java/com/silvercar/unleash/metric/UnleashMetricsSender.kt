@@ -58,7 +58,7 @@ class UnleashMetricsSender(private val unleashConfig: UnleashConfig) {
       connection.requestMethod = "POST"
       connection.setRequestProperty("Accept", "application/json")
       connection.setRequestProperty("Content-Type", "application/json")
-      UnleashConfig.setRequestProperties(connection, unleashConfig)
+      unleashConfig.setRequestProperties(connection)
       connection.useCaches = false
       connection.doInput = true
       connection.doOutput = true

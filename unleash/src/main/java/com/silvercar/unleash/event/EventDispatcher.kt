@@ -8,9 +8,9 @@ class EventDispatcher(unleashConfig: UnleashConfig) {
   private val unleashScheduledExecutor: UnleashScheduledExecutor = unleashConfig.scheduledExecutor
 
   fun dispatch(unleashEvent: UnleashEvent) {
-    unleashScheduledExecutor.scheduleOnce {
+    unleashScheduledExecutor.scheduleOnce(Runnable {
       unleashSubscriber.on(unleashEvent)
       unleashEvent.publishTo(unleashSubscriber)
-    }
+    })
   }
 }

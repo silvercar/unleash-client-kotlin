@@ -28,7 +28,7 @@ class HttpToggleFetcher(private val unleashConfig: UnleashConfig) : ToggleFetche
       connection.setRequestProperty("Accept", "application/json")
       connection.setRequestProperty("Content-Type", "application/json")
 
-      UnleashConfig.setRequestProperties(connection, unleashConfig)
+      unleashConfig.setRequestProperties(connection)
 
       if (eTag.isNotEmpty()) {
         connection.setRequestProperty("If-None-Match", eTag)

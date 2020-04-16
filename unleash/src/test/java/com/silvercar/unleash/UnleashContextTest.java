@@ -2,6 +2,7 @@ package com.silvercar.unleash;
 
 
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -54,7 +55,7 @@ public class UnleashContextTest {
                 .addProperty("test", "me")
                 .build();
 
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .unleashAPI("http://test.com")
                 .appName("someApp")
                 .environment("stage")
@@ -71,7 +72,7 @@ public class UnleashContextTest {
     }
 
     @Test
-    public void should_not_ovveride_static_context_fields() {
+    public void should_not_override_static_context_fields() {
         UnleashContext context = UnleashContext.builder()
                 .userId("test@mail.com")
                 .sessionId("123")
@@ -81,7 +82,7 @@ public class UnleashContextTest {
                 .addProperty("test", "me")
                 .build();
 
-        UnleashConfig config = UnleashConfig.builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .unleashAPI("http://test.com")
                 .appName("someApp")
                 .environment("stage")

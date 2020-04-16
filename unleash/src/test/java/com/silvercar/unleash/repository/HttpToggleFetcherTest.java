@@ -8,6 +8,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.Options;
 import com.silvercar.unleash.FeatureToggle;
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -61,7 +62,7 @@ public class HttpToggleFetcherTest {
                         .withBodyFile("features-v0.json")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
         FeatureToggleResponse response = httpToggleFetcher.fetchToggles();
         FeatureToggle featureX = response.getToggleCollection().getToggle("featureX");
@@ -82,7 +83,7 @@ public class HttpToggleFetcherTest {
                         .withBodyFile("features-v1.json")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
         FeatureToggleResponse response = httpToggleFetcher.fetchToggles();
         FeatureToggle featureX = response.getToggleCollection().getToggle("featureX");
@@ -103,7 +104,7 @@ public class HttpToggleFetcherTest {
                         .withBodyFile("features-v1-with-variants.json")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
         FeatureToggleResponse response = httpToggleFetcher.fetchToggles();
         FeatureToggle featureX = response.getToggleCollection().getToggle("Test.variants");
@@ -134,7 +135,7 @@ public class HttpToggleFetcherTest {
                         .withHeader("Content-Type", "application/json")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
 
 
@@ -155,7 +156,7 @@ public class HttpToggleFetcherTest {
                         .withHeader("Content-Type", "application/json")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
         httpToggleFetcher.fetchToggles();
 
@@ -175,7 +176,7 @@ public class HttpToggleFetcherTest {
                         .withBody("{}")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
         httpToggleFetcher.fetchToggles();
 
@@ -192,7 +193,7 @@ public class HttpToggleFetcherTest {
                         .withHeader("Content-Type", "application/json")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
         FeatureToggleResponse response = httpToggleFetcher.fetchToggles();
         assertEquals(response.getStatus(), FeatureToggleResponse.Status.NOT_CHANGED,
@@ -214,7 +215,7 @@ public class HttpToggleFetcherTest {
                             .withHeader("Content-Type", "application/json")));
 
             URI uri = new URI("http://localhost:" + serverMock.port() + "/api/");
-            UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+            UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
             HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
             FeatureToggleResponse response = httpToggleFetcher.fetchToggles();
             assertEquals(response.getStatus(), FeatureToggleResponse.Status.UNAVAILABLE,
@@ -238,7 +239,7 @@ public class HttpToggleFetcherTest {
                         .withBodyFile("features-v1.json")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
         FeatureToggleResponse response = httpToggleFetcher.fetchToggles();
 
@@ -256,7 +257,7 @@ public class HttpToggleFetcherTest {
                 .withHeader("Location", "https://unleash.com")));
 
         URI uri = new URI("http://localhost:"+serverMock.port() + "/api/");
-        UnleashConfig config = UnleashConfig.builder().appName("test").unleashAPI(uri).build();
+        UnleashConfig config = new UnleashConfigBuilder().appName("test").unleashAPI(uri).build();
         HttpToggleFetcher httpToggleFetcher = new HttpToggleFetcher(config);
         FeatureToggleResponse response = httpToggleFetcher.fetchToggles();
         assertThat(response.getLocation(), is("https://unleash.com"));

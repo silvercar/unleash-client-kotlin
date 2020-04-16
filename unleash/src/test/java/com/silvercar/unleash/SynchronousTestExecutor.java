@@ -14,7 +14,7 @@ public class SynchronousTestExecutor implements UnleashScheduledExecutor {
     private static final Logger LOG = LogManager.getLogger(SynchronousTestExecutor.class);
 
     @Override
-    public ScheduledFuture setInterval(Runnable command, long initialDelaySec, long periodSec) throws RejectedExecutionException {
+    public ScheduledFuture setInterval(Runnable command, long initialDelay, long period) throws RejectedExecutionException {
         LOG.warn("i will only do this once");
         return scheduleOnce(command);
     }
@@ -23,6 +23,10 @@ public class SynchronousTestExecutor implements UnleashScheduledExecutor {
     public ScheduledFuture scheduleOnce(Runnable runnable) {
         runnable.run();
         return new AlreadyCompletedScheduledFuture();
+    }
+
+    @Override public void shutdown() {
+
     }
 
     private static class AlreadyCompletedScheduledFuture implements ScheduledFuture<Void> {

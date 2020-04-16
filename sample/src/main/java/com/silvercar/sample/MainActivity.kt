@@ -14,6 +14,7 @@ import com.silvercar.unleash.event.UnleashSubscriber
 import com.silvercar.unleash.repository.FeatureToggleResponse
 import com.silvercar.unleash.repository.ToggleCollection
 import com.silvercar.unleash.util.UnleashConfig
+import com.silvercar.unleash.util.unleashConfig
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
@@ -48,12 +49,12 @@ class MainActivity : AppCompatActivity() {
 
     return withContext(Dispatchers.IO) {
       suspendCoroutine<Unleash> { coroutine ->
-        val config: UnleashConfig = UnleashConfig.builder()
-          .appName(application.packageName)
-          .unleashAPI("https://unleash.silvercar.com/api")
-          .fetchTogglesInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
-          .sendMetricsInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
-          .subscriber(object : UnleashSubscriber {
+        val config: UnleashConfig = unleashConfig {
+          appName(application.packageName)
+          unleashAPI("https://unleash.silvercar.com/api")
+          fetchTogglesInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
+          sendMetricsInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
+          subscriber(object : UnleashSubscriber {
             override fun onReady(ready: UnleashReady) {
               Timber.d("Unleash is ready")
               coroutine.resume(unleash)
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
               Timber.d("Backup stored.")
             }
           })
-          .build()
+        }.build()
         unleash = DefaultUnleash(config, EnvironmentStrategy())
       }
     }

@@ -1,32 +1,32 @@
 package com.silvercar.unleash.metric;
 
 import com.silvercar.unleash.util.UnleashConfig;
+import com.silvercar.unleash.util.UnleashConfigBuilder;
 import com.silvercar.unleash.util.UnleashScheduledExecutor;
+import java.util.HashSet;
+import java.util.Set;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class UnleashMetricServiceTest {
 
     @Test
     public void should_register_future_for_sending_interval_regualry() {
         long interval = 10;
-        UnleashConfig config = UnleashConfig
-                .builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .sendMetricsInterval(interval)
                 .unleashAPI("http://unleash.com")
@@ -40,8 +40,7 @@ public class UnleashMetricServiceTest {
     @Test
     public void should_register_client() {
         long interval = 10;
-        UnleashConfig config = UnleashConfig
-                .builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .sendMetricsInterval(interval)
                 .unleashAPI("http://unleash.com")
@@ -73,8 +72,7 @@ public class UnleashMetricServiceTest {
 
     @Test
     public void should_send_metrics() {
-        UnleashConfig config = UnleashConfig
-                .builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .sendMetricsInterval(10)
                 .unleashAPI("http://unleash.com")
@@ -95,8 +93,7 @@ public class UnleashMetricServiceTest {
 
     @Test
     public void should_record_and_send_metrics() {
-        UnleashConfig config = UnleashConfig
-                .builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .sendMetricsInterval(10)
                 .unleashAPI("http://unleash.com")
@@ -135,8 +132,7 @@ public class UnleashMetricServiceTest {
 
     @Test
     public void should_record_and_send_variant_metrics() {
-        UnleashConfig config = UnleashConfig
-                .builder()
+        UnleashConfig config = new UnleashConfigBuilder()
                 .appName("test")
                 .sendMetricsInterval(10)
                 .unleashAPI("http://unleash.com")
