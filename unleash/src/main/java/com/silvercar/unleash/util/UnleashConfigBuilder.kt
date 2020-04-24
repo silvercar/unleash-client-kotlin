@@ -60,7 +60,6 @@ fun unleashConfig(func: UnleashConfigBuilder.() -> Unit) = UnleashConfigBuilder(
 
   fun customHttpHeadersProvider(provider: CustomHttpHeadersProvider): UnleashConfigBuilder {
     customHttpHeadersProvider = provider
-//    customHttpHeadersProvider = provider
     return this
   }
 
