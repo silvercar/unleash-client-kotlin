@@ -23,8 +23,8 @@ public class StrategyUsingContext implements Strategy {
     public boolean isEnabled(Map<String, String> parameters, UnleashContext unleashContext) {
         String userIdString = parameters.get("userIds");
         List<String> userIds = asList(userIdString.split(",\\s?"));
-        if(unleashContext.getUserId().isPresent()) {
-            String userId = unleashContext.getUserId().get();
+        if(!unleashContext.getUserId().isEmpty()) {
+            String userId = unleashContext.getUserId();
             return userIds.contains(userId);
         } else {
             return false;

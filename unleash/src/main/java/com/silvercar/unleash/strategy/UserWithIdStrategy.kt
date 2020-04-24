@@ -14,13 +14,13 @@ class UserWithIdStrategy : Strategy {
     parameters: Map<String, String>,
     unleashContext: UnleashContext
   ): Boolean {
-    if (unleashContext.userId2.isEmpty()) {
+    if (unleashContext.userId.isEmpty()) {
       return false
     }
 
     val userIds: List<String> = (parameters[USER_IDS_PARAM] ?: "").split(",\\s?".toRegex())
 
-    return userIds.contains(unleashContext.userId2)
+    return userIds.contains(unleashContext.userId)
   }
 
   companion object {

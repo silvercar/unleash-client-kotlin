@@ -89,7 +89,8 @@ class RemoteAddressStrategyTest {
     @ParameterizedTest
     @MethodSource("data")
     void test_all_combinations(String actualIp, String parameterString, boolean expected) {
-        UnleashContext context = UnleashContext.builder().remoteAddress(actualIp).build();
+        final String ipString = actualIp != null ? actualIp : "";
+        UnleashContext context = UnleashContext.builder().remoteAddress(ipString).build();
         Map<String, String> parameters = setupParameterMap(parameterString);
 
         assertThat(strategy.isEnabled(parameters, context), is(expected));

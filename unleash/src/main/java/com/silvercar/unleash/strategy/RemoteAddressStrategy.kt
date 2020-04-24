@@ -21,8 +21,8 @@ class RemoteAddressStrategy : Strategy {
     return ipAddresses.any {
       val buildIpAddressMatcher = buildIpAddressMatcher(it)
 
-      unleashContext.remoteAddress2.isNotEmpty()
-          && (buildIpAddressMatcher?.matches(unleashContext.remoteAddress2) ?: false)
+      unleashContext.remoteAddress.isNotEmpty()
+          && (buildIpAddressMatcher?.matches(unleashContext.remoteAddress) ?: false)
     }
   }
 
