@@ -1,7 +1,6 @@
 package com.silvercar.unleash.util;
 
 import com.silvercar.unleash.CustomHttpHeadersProvider;
-import com.silvercar.unleash.DefaultCustomHttpHeadersProviderImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -154,9 +153,9 @@ public class UnleashConfigTest {
     @Test
     public void should_add_custom_headers_from_provider_to_connection_if_present() throws IOException {
         String unleashAPI = "http://unleash.org";
-        Map<String,String> result = new HashMap() {{ put("PROVIDER-HEADER","Provider Value"); }};
+        Map<String,String> result = new HashMap<String, String>() {{ put("PROVIDER-HEADER","Provider Value"); }};
 
-        CustomHttpHeadersProvider provider = Mockito.mock(DefaultCustomHttpHeadersProviderImpl.class);
+        CustomHttpHeadersProvider provider = Mockito.mock(CustomHttpHeadersProvider.class);
         when(provider.getCustomHeaders()).thenReturn(result);
 
         UnleashConfig unleashConfig = new UnleashConfigBuilder()

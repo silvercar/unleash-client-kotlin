@@ -41,7 +41,7 @@ import java.net.URI
     for ((key, value) in customHttpHeaders) {
       connection.setRequestProperty(key, value)
     }
-    for ((key, value) in customHttpHeadersProvider.customHeaders) {
+    for ((key, value) in customHttpHeadersProvider.getCustomHeaders()) {
       connection.setRequestProperty(key, value)
     }
   }

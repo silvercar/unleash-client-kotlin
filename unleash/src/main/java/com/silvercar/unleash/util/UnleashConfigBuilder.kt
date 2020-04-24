@@ -1,7 +1,6 @@
 package com.silvercar.unleash.util
 
 import com.silvercar.unleash.CustomHttpHeadersProvider
-import com.silvercar.unleash.DefaultCustomHttpHeadersProviderImpl
 import com.silvercar.unleash.UnleashContext
 import com.silvercar.unleash.UnleashContextProvider
 import com.silvercar.unleash.event.NoOpSubscriber
@@ -15,7 +14,11 @@ fun unleashConfig(func: UnleashConfigBuilder.() -> Unit) = UnleashConfigBuilder(
   private var unleashAPI: URI? = null
   private val customHttpHeaders: MutableMap<String, String> = mutableMapOf()
   private var customHttpHeadersProvider: CustomHttpHeadersProvider =
-    DefaultCustomHttpHeadersProviderImpl()
+    object : CustomHttpHeadersProvider {
+      override fun getCustomHeaders(): Map<String, String> {
+        return mutableMapOf()
+      }
+  }
   private var appName: String? = null
   private var environment = "default"
   private var instanceId = DefaultInstanceIdFactory.getInstance()
@@ -24,7 +27,11 @@ fun unleashConfig(func: UnleashConfigBuilder.() -> Unit) = UnleashConfigBuilder(
   private var fetchTogglesInterval: Long = TEN_SECONDS
   private var sendMetricsInterval: Long = SIXTY_SECONDS
   private var disableMetrics = false
-  private var contextProvider = UnleashContextProvider { UnleashContext.builder().build() }
+  private var contextProvider: UnleashContextProvider = object : UnleashContextProvider {
+    override fun getContext(): UnleashContext {
+      return UnleashContext.builder().build()
+    }
+  }
   private var synchronousFetchOnInitialisation = false
   private var scheduledExecutor: UnleashScheduledExecutor? = null
   private var unleashSubscriber: UnleashSubscriber? = null
@@ -53,6 +60,7 @@ fun unleashConfig(func: UnleashConfigBuilder.() -> Unit) = UnleashConfigBuilder(
 
   fun customHttpHeadersProvider(provider: CustomHttpHeadersProvider): UnleashConfigBuilder {
     customHttpHeadersProvider = provider
+//    customHttpHeadersProvider = provider
     return this
   }
 
