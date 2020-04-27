@@ -1,13 +1,5 @@
 package com.silvercar.unleash;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-import java.util.function.BiFunction;
-
 import com.silvercar.unleash.event.EventDispatcher;
 import com.silvercar.unleash.event.ToggleEvaluated;
 import com.silvercar.unleash.metric.UnleashMetricService;
@@ -15,11 +7,28 @@ import com.silvercar.unleash.repository.FeatureToggleRepository;
 import com.silvercar.unleash.repository.HttpToggleFetcher;
 import com.silvercar.unleash.repository.ToggleBackupHandlerFile;
 import com.silvercar.unleash.repository.ToggleRepository;
-import com.silvercar.unleash.strategy.*;
+import com.silvercar.unleash.strategy.ApplicationHostnameStrategy;
+import com.silvercar.unleash.strategy.ConstraintUtil;
+import com.silvercar.unleash.strategy.DefaultStrategy;
+import com.silvercar.unleash.strategy.FlexibleRolloutStrategy;
+import com.silvercar.unleash.strategy.GradualRolloutRandomStrategy;
+import com.silvercar.unleash.strategy.GradualRolloutSessionIdStrategy;
+import com.silvercar.unleash.strategy.GradualRolloutUserIdStrategy;
+import com.silvercar.unleash.strategy.RandomGenerator;
+import com.silvercar.unleash.strategy.RemoteAddressStrategy;
+import com.silvercar.unleash.strategy.Strategy;
+import com.silvercar.unleash.strategy.UnknownStrategy;
+import com.silvercar.unleash.strategy.UserWithIdStrategy;
 import com.silvercar.unleash.util.UnleashConfig;
 import com.silvercar.unleash.variant.VariantUtil;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.function.BiFunction;
+import org.jetbrains.annotations.Nullable;
 
-import static java.util.Optional.ofNullable;
 import static com.silvercar.unleash.Variant.DISABLED_VARIANT;
 
 public final class DefaultUnleash implements Unleash {
@@ -122,7 +131,9 @@ public final class DefaultUnleash implements Unleash {
     public Variant getVariant(String toggleName, UnleashContext context, Variant defaultValue) {
         FeatureToggle featureToggle = toggleRepository.getToggle(toggleName);
         boolean enabled = checkEnabled(toggleName, context, (n, c) -> false);
-        Variant variant = enabled ? new VariantUtil().selectVariant(featureToggle, context, defaultValue) : defaultValue;
+        Variant variant = enabled && featureToggle != null
+            ? new VariantUtil().selectVariant(featureToggle, context, defaultValue)
+            : defaultValue;
         metricService.countVariant(toggleName, variant.getName());
         return variant;
     }
@@ -137,8 +148,8 @@ public final class DefaultUnleash implements Unleash {
         return getVariant(toggleName, contextProvider.getContext(), defaultValue);
     }
 
-    public Optional<FeatureToggle> getFeatureToggleDefinition(String toggleName) {
-        return ofNullable(toggleRepository.getToggle(toggleName));
+    @Nullable public FeatureToggle getFeatureToggleDefinition(String toggleName) {
+        return toggleRepository.getToggle(toggleName);
     }
 
     public List<String> getFeatureToggleNames() {
@@ -152,7 +163,9 @@ public final class DefaultUnleash implements Unleash {
     private Map<String, Strategy> buildStrategyMap(Strategy[] strategies) {
         Map<String, Strategy> map = new HashMap<>();
 
-        BUILTIN_STRATEGIES.forEach(strategy -> map.put(strategy.getName(), strategy));
+        for (Strategy strategy : BUILTIN_STRATEGIES) {
+            map.put(strategy.getName(), strategy);
+        }
 
         if (strategies != null) {
             for (Strategy strategy : strategies) {

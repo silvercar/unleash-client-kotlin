@@ -30,7 +30,7 @@ class GradualRolloutUserIdStrategy : Strategy {
     parameters: Map<String, String>,
     unleashContext: UnleashContext
   ): Boolean {
-    val userId: String = unleashContext.userId2
+    val userId: String = unleashContext.userId
 
     if (userId.isEmpty()) {
       return false

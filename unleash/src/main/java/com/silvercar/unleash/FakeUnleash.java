@@ -24,7 +24,7 @@ public final class FakeUnleash implements Unleash {
         } else if(disableAll) {
             return false;
         } else {
-            return features.getOrDefault(toggleName, defaultSetting);
+            return features.containsKey(toggleName) ? features.get(toggleName) : defaultSetting;
         }
     }
 
@@ -36,7 +36,7 @@ public final class FakeUnleash implements Unleash {
     @Override
     public boolean isEnabled(String toggleName, BiFunction<String, UnleashContext, Boolean> fallbackAction) {
         if(!features.containsKey(toggleName)) {
-            return fallbackAction.apply(toggleName, UnleashContext.builder().build());
+            return fallbackAction.apply(toggleName, new UnleashContext.Builder().build());
         }
         return isEnabled(toggleName);
     }

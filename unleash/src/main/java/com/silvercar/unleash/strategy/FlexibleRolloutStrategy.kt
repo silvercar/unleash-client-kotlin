@@ -17,13 +17,13 @@ class FlexibleRolloutStrategy(private val randomGenerator: RandomGenerator) :
 
   private fun resolveStickiness(stickiness: String, context: UnleashContext): String {
     return when (stickiness) {
-      "userId" -> context.userId2
-      "sessionId" -> context.sessionId2
+      "userId" -> context.userId
+      "sessionId" -> context.sessionId
       "random" -> randomGenerator.get()
-      else -> if (context.userId2.isNotEmpty()) {
-        context.userId2
-      } else if (context.sessionId2.isNotEmpty()) {
-        context.sessionId2
+      else -> if (context.userId.isNotEmpty()) {
+        context.userId
+      } else if (context.sessionId.isNotEmpty()) {
+        context.sessionId
       } else {
         randomGenerator.get()
       }

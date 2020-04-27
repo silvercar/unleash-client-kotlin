@@ -60,13 +60,13 @@ class VariantUtil {
   ): Boolean {
     val contextValue = when (contextName) {
       "userId" -> {
-        context.userId2
+        context.userId
       }
       "sessionId" -> {
-        context.sessionId2
+        context.sessionId
       }
       "remoteAddress" -> {
-        context.remoteAddress2
+        context.remoteAddress
       }
       else -> context.properties[contextName] ?: ""
     }
@@ -76,14 +76,14 @@ class VariantUtil {
 
   private fun getIdentifier(context: UnleashContext): String {
     return when {
-      context.userId2.isNotEmpty() -> {
-        context.userId2
+      context.userId.isNotEmpty() -> {
+        context.userId
       }
-      context.sessionId2.isNotEmpty() -> {
-        context.sessionId2
+      context.sessionId.isNotEmpty() -> {
+        context.sessionId
       }
-      context.remoteAddress2.isNotEmpty() -> {
-        context.remoteAddress2
+      context.remoteAddress.isNotEmpty() -> {
+        context.remoteAddress
       }
       else -> {
         Math.random()

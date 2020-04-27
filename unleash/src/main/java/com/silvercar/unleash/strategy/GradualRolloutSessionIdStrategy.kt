@@ -30,7 +30,7 @@ class GradualRolloutSessionIdStrategy : Strategy {
     parameters: Map<String, String>,
     unleashContext: UnleashContext
   ): Boolean {
-    val sessionId: String = unleashContext.sessionId2
+    val sessionId: String = unleashContext.sessionId
 
     if (sessionId.isEmpty()) {
       return false
