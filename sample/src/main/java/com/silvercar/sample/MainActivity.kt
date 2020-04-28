@@ -3,22 +3,21 @@ package com.silvercar.sample
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import com.silvercar.unleash.DefaultUnleash
 import com.silvercar.unleash.Unleash
 import com.silvercar.unleash.event.UnleashReady
 import com.silvercar.unleash.event.UnleashSubscriber
 import com.silvercar.unleash.repository.FeatureToggleResponse
 import com.silvercar.unleash.repository.ToggleCollection
-import com.silvercar.unleash.util.UnleashConfig
 import com.silvercar.unleash.util.unleashConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class MainActivity : AppCompatActivity() {
   private lateinit var unleash: Unleash
@@ -34,43 +33,49 @@ class MainActivity : AppCompatActivity() {
 
     unleashEnabled = findViewById(R.id.unleashEnabled)
 
-    GlobalScope.launch {
-      unleash = initUnleash()
+    CoroutineScope(Dispatchers.Main).launch {
+      unleash = withContext(Dispatchers.IO) { initUnleash() }
       val isEnabled = unleash.isEnabled("test-android")
-      unleashEnabled.text = getString(
-        R.string.unleash_test_android_enabled_formatted,
-        isEnabled
-      )
+
+      Timber.d("isEnabled just got set to %b", isEnabled)
+      unleashEnabled.text = getString(R.string.unleash_test_android_enabled_formatted, isEnabled)
     }
   }
 
+  // TODO: Need to change how Unleash is init because this is very painful to integrate
   private suspend fun initUnleash(): Unleash {
-    lateinit var unleash: Unleash
+    lateinit var subscriber: UnleashSubscriber
 
-    return withContext(Dispatchers.IO) {
-      suspendCoroutine<Unleash> { coroutine ->
-        val config: UnleashConfig = unleashConfig {
-          appName(application.packageName)
-          unleashAPI("https://unleash.silvercar.com/api")
-          fetchTogglesInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
-          sendMetricsInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
-          subscriber(object : UnleashSubscriber {
-            override fun onReady(ready: UnleashReady) {
-              Timber.d("Unleash is ready")
-              coroutine.resume(unleash)
-            }
+    val unleash: Unleash by lazy {
+      DefaultUnleash(unleashConfig {
+        appName(application.packageName)
+        unleashAPI("https://unleash.silvercar.com/api")
+        fetchTogglesInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
+        sendMetricsInterval(TimeUnit.MINUTES.toSeconds(INTERVAL))
+        subscriber(subscriber)
+      }.build(), EnvironmentStrategy())
+    }
 
-            override fun togglesFetched(response: FeatureToggleResponse) {
-              Timber.d("Fetch toggles with status: %s", response.status)
-            }
+    return suspendCancellableCoroutine<Unleash> { coroutine ->
+      subscriber = object : UnleashSubscriber {
+        override fun onReady(ready: UnleashReady) {
+          Timber.d("Unleash is ready")
+          coroutine.resume(unleash)
+        }
 
-            override fun togglesBackedUp(toggleCollection: ToggleCollection) {
-              Timber.d("Backup stored.")
-            }
-          })
-        }.build()
-        unleash = DefaultUnleash(config, EnvironmentStrategy())
+        override fun togglesFetched(response: FeatureToggleResponse) {
+          Timber.d("Fetch toggles with status: %s", response.status)
+        }
+
+        override fun togglesBackedUp(toggleCollection: ToggleCollection) {
+          Timber.d("Backup stored.")
+        }
       }
+
+      coroutine.invokeOnCancellation { unleash.shutdown() }
+
+      // init Unleash
+      unleash
     }
   }
 

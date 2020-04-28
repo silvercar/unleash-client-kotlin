@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
+import kotlin.jvm.functions.Function2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -86,44 +87,44 @@ public class UnleashTest {
     @Test
     public void fallback_function_should_be_invoked_and_return_true() {
         when(toggleRepository.getToggle("test")).thenReturn(null);
-        BiFunction<String, UnleashContext, Boolean>  fallbackAction = mock(BiFunction.class);
-        when(fallbackAction.apply(eq("test"), any(UnleashContext.class))).thenReturn(true);
+        Function2<String, UnleashContext, Boolean>  fallbackAction = mock(Function2.class);
+        when(fallbackAction.invoke(eq("test"), any(UnleashContext.class))).thenReturn(true);
 
         assertThat(unleash.isEnabled("test", fallbackAction), is(true));
-        verify(fallbackAction, times(1)).apply(anyString(), any(UnleashContext.class));
+        verify(fallbackAction, times(1)).invoke(anyString(), any(UnleashContext.class));
     }
 
     @Test
     public void fallback_function_should_be_invoked_also_with_context() {
         when(toggleRepository.getToggle("test")).thenReturn(null);
-        BiFunction<String, UnleashContext, Boolean>  fallbackAction = mock(BiFunction.class);
-        when(fallbackAction.apply(eq("test"), any(UnleashContext.class))).thenReturn(true);
+        Function2<String, UnleashContext, Boolean>  fallbackAction = mock(Function2.class);
+        when(fallbackAction.invoke(eq("test"), any(UnleashContext.class))).thenReturn(true);
 
         UnleashContext context = UnleashContext.builder().userId("123").build();
 
         assertThat(unleash.isEnabled("test", context, fallbackAction), is(true));
-        verify(fallbackAction, times(1)).apply(anyString(), any(UnleashContext.class));
+        verify(fallbackAction, times(1)).invoke(anyString(), any(UnleashContext.class));
     }
 
     @Test
     void fallback_function_should_be_invoked_and_return_false() {
         when(toggleRepository.getToggle("test")).thenReturn(null);
-        BiFunction<String, UnleashContext, Boolean>  fallbackAction = mock(BiFunction.class);
-        when(fallbackAction.apply(eq("test"), any(UnleashContext.class))).thenReturn(false);
+        Function2<String, UnleashContext, Boolean>  fallbackAction = mock(Function2.class);
+        when(fallbackAction.invoke(eq("test"), any(UnleashContext.class))).thenReturn(false);
 
         assertThat(unleash.isEnabled("test", fallbackAction), is(false));
-        verify(fallbackAction, times(1)).apply(anyString(), any(UnleashContext.class));
+        verify(fallbackAction, times(1)).invoke(anyString(), any(UnleashContext.class));
     }
 
 	@Test
 	void fallback_function_should_not_be_called_when_toggle_is_defined() {
 		when(toggleRepository.getToggle("test")).thenReturn(new FeatureToggle("test", true, asList(new ActivationStrategy("default", null))));
 
-        BiFunction<String, UnleashContext, Boolean>  fallbackAction = mock(BiFunction.class);
-        when(fallbackAction.apply(eq("test"), any(UnleashContext.class))).thenReturn(false);
+        Function2<String, UnleashContext, Boolean>  fallbackAction = mock(Function2.class);
+        when(fallbackAction.invoke(eq("test"), any(UnleashContext.class))).thenReturn(false);
 
 		assertThat(unleash.isEnabled("test", fallbackAction), is(true));
-        verify(fallbackAction, never()).apply(anyString(), any(UnleashContext.class));
+        verify(fallbackAction, never()).invoke(anyString(), any(UnleashContext.class));
 	}
 
     @Test
@@ -214,7 +215,7 @@ public class UnleashTest {
         FeatureToggle featureToggle = new FeatureToggle("test", false, asList(strategy1));
         when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
 
-        assertThat(((DefaultUnleash)unleash).getFeatureToggleDefinition("test"), is(Optional.of(featureToggle)));
+        assertThat(((DefaultUnleash)unleash).getFeatureToggleDefinition("test"), is(featureToggle));
     }
 
     @Test
@@ -223,7 +224,7 @@ public class UnleashTest {
         FeatureToggle featureToggle = new FeatureToggle("test", false, asList(strategy1));
         when(toggleRepository.getToggle("test")).thenReturn(featureToggle);
 
-        assertThat(((DefaultUnleash)unleash).getFeatureToggleDefinition("another toggleName"), is(Optional.empty()));
+        assertNull(((DefaultUnleash)unleash).getFeatureToggleDefinition("another toggleName"));
     }
 
     @Test
