@@ -1,5 +1,6 @@
 package com.silvercar.unleash.variant;
 
+import com.silvercar.unleash.ActivationStrategyBuilder;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -16,7 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class VariantUtilTest {
-    private final ActivationStrategy defaultStrategy = new ActivationStrategy("default", Collections.emptyMap());
+    private final ActivationStrategy defaultStrategy = new ActivationStrategyBuilder()
+        .withName("default")
+        .build();
 
     @Test
     public void should_return_default_variant_when_toggle_has_no_variants() {

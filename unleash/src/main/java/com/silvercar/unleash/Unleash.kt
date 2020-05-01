@@ -6,7 +6,7 @@ package com.silvercar.unleash
   fun isEnabled(toggleName: String): Boolean
   fun isEnabled(toggleName: String, defaultSetting: Boolean): Boolean
   fun isEnabled(toggleName: String, context: UnleashContext): Boolean {
-    return isEnabled(toggleName, false)
+    return isEnabled(toggleName, context, false)
   }
 
   fun isEnabled(toggleName: String, context: UnleashContext, defaultSetting: Boolean): Boolean {
@@ -22,7 +22,7 @@ package com.silvercar.unleash
     context: UnleashContext,
     fallbackAction: (String, UnleashContext) -> Boolean
   ): Boolean {
-    return isEnabled(toggleName, false)
+    return isEnabled(toggleName, context, false)
   }
 
   fun getVariant(toggleName: String): Variant
