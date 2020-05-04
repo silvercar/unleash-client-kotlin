@@ -1,6 +1,9 @@
 package com.silvercar.unleash
 
+import com.silvercar.unleash.UnleashContext.Builder
 import com.silvercar.unleash.util.UnleashConfig
+
+fun unleashContext(func: Builder.() -> Unit) = Builder().apply(func)
 
 @Suppress("LongParameterList") class UnleashContext(
   val appName: String?,
