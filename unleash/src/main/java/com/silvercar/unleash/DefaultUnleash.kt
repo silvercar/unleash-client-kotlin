@@ -123,7 +123,7 @@ import java.util.Random
       featureToggle.strategies.any { activationStrategy ->
         val strategy = getStrategy(activationStrategy.name)
         ConstraintUtil().validate(activationStrategy.constraints, enhancedContext)
-            && strategy.isEnabled(activationStrategy.parameters, enhancedContext)
+            && strategy.isEnabled(activationStrategy.getParameters(), enhancedContext)
       }
     }
   }

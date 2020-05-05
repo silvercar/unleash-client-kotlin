@@ -1,6 +1,7 @@
 package com.silvercar.unleash.repository;
 
 import com.silvercar.unleash.ActivationStrategy;
+import com.silvercar.unleash.ActivationStrategyBuilder;
 import com.silvercar.unleash.FeatureToggle;
 import com.silvercar.unleash.util.UnleashConfig;
 import com.silvercar.unleash.util.UnleashConfigBuilder;
@@ -53,15 +54,18 @@ public class FeatureToggleRepositoryTest {
     public void feature_toggles_should_be_updated() throws URISyntaxException, InterruptedException {
         ToggleFetcher toggleFetcher = mock(ToggleFetcher.class);
 
+        final ActivationStrategy strategy = new ActivationStrategyBuilder()
+            .withName("custom")
+            .build();
+
         //setup backupHandler
         ToggleBackupHandler toggleBackupHandler = mock(ToggleBackupHandler.class);
         ToggleCollection toggleCollection = populatedToggleCollection(
-                new FeatureToggle("toggleFetcherCalled", false, Arrays.asList(new ActivationStrategy("custom", null))));
+                new FeatureToggle("toggleFetcherCalled", false, Arrays.asList(strategy)));
         when(toggleBackupHandler.read()).thenReturn(toggleCollection);
 
         //setup fetcher
-        toggleCollection = populatedToggleCollection(
-                new FeatureToggle("toggleFetcherCalled", true, Arrays.asList(new ActivationStrategy("custom", null))));
+        toggleCollection = populatedToggleCollection(new FeatureToggle("toggleFetcherCalled", true, Arrays.asList(strategy)));
         FeatureToggleResponse response = new FeatureToggleResponse(FeatureToggleResponse.Status.CHANGED, 200, toggleCollection, null);
         when(toggleFetcher.fetchToggles()).thenReturn(response);
 
@@ -98,11 +102,13 @@ public class FeatureToggleRepositoryTest {
                 .scheduledExecutor(mock(UnleashScheduledExecutor.class))
                 .build();
         ToggleFetcher toggleFetcher = mock(ToggleFetcher.class);
-
+        final ActivationStrategy strategy = new ActivationStrategyBuilder()
+            .withName("custom")
+            .build();
         ToggleBackupHandler toggleBackupHandler = mock(ToggleBackupHandler.class);
         ToggleCollection toggleCollection = populatedToggleCollection(
-                new FeatureToggle("toggleFeatureName1", true, Arrays.asList(new ActivationStrategy("custom", null))),
-                new FeatureToggle("toggleFeatureName2", true, Arrays.asList(new ActivationStrategy("custom", null)))
+                new FeatureToggle("toggleFeatureName1", true, Arrays.asList(strategy)),
+                new FeatureToggle("toggleFeatureName2", true, Arrays.asList(strategy))
         );
         when(toggleBackupHandler.read()).thenReturn(toggleCollection);
 
