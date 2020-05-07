@@ -5,10 +5,10 @@ import com.silvercar.unleash.strategy.UserWithIdStrategy.Companion.USER_IDS_PARA
 import com.silvercar.unleash.unleashContext
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 class UserWithIdStrategyTest {
   private val strategy: UserWithIdStrategy
@@ -19,53 +19,21 @@ class UserWithIdStrategyTest {
     assertEquals(strategy.name, "userWithId")
   }
 
-  @TestFactory
-  @DisplayName("When user id in Unleash context")
-  fun whenUserIdContext() = mapOf(
-    Pair(Pair(USER_IDS_PARAM, "001"), "001"),
-    Pair(Pair(USER_IDS_PARAM, "111, 112, 113"), "111"),
-    Pair(Pair(USER_IDS_PARAM, "221, 222, 223"), "222"),
-    Pair(Pair(USER_IDS_PARAM, "331, 332, 333"), "333"),
-    Pair(
-      Pair(
-        USER_IDS_PARAM,
-        "160118738, 1823311338, 1422637466, 2125981185, 298261117, 1829486714, 463568019, 271166598"
-      ), "298261117"
-    )
-  ).map { (parameters, userId) ->
-    DynamicTest.dynamicTest("should match user id $userId") {
-      // Arrange
-      val context = unleashContext { userId(userId) }.build()
+  @ParameterizedTest
+  @MethodSource("userIdContext")
+  fun `should match user id`(
+    parameters: Pair<String, String>,
+    userId: String,
+    expected: Boolean
+  ) {
+    // Arrange
+    val context = unleashContext { userId(userId) }.build()
 
-      // Act
-      val result = strategy.isEnabled(mapOf(parameters), context)
+    // Act
+    val result = strategy.isEnabled(mapOf(parameters), context)
 
-      // Assert
-      Assertions.assertTrue(result)
-    }
-  }
-
-  @TestFactory
-  @DisplayName("When user id not in Unleash context")
-  fun whenUserIdNotContext() = mapOf(
-    Pair(Pair(USER_IDS_PARAM, "123, 122, 121, 212"), "12"),
-    Pair(
-      Pair(
-        USER_IDS_PARAM,
-        "160118738, 1823311338, 1422637466, 2125981185, 298261117, 1829486714, 463568019, 271166598"
-      ), "32667774"
-    )
-  ).map { (parameters, userId) ->
-    DynamicTest.dynamicTest("should not match user id $userId") {
-      // Arrange
-      val context = unleashContext { userId(userId) }.build()
-
-      // Act
-      val result = strategy.isEnabled(mapOf(parameters), context)
-
-      // Assert
-      Assertions.assertFalse(result)
-    }
+    // Assert
+    assertEquals(result, expected)
   }
 
   @Test fun `should not match csv without space`() {
@@ -89,5 +57,26 @@ class UserWithIdStrategyTest {
 
     // Assert
     Assertions.assertFalse(result)
+  }
+
+  companion object {
+    @Suppress("unused") @JvmStatic fun userIdContext() = listOf(
+      Arguments.of(Pair(USER_IDS_PARAM, "001"), "001", true),
+      Arguments.of(Pair(USER_IDS_PARAM, "111, 112, 113"), "111", true),
+      Arguments.of(Pair(USER_IDS_PARAM, "221, 222, 223"), "222", true),
+      Arguments.of(Pair(USER_IDS_PARAM, "331, 332, 333"), "333", true),
+      Arguments.of(Pair(
+          USER_IDS_PARAM,
+          "160118738, 1823311338, 1422637466, 2125981185, 298261117, 1829486714, 463568019, 271166598"
+        ), "298261117", true
+      ),
+      Arguments.of(Pair(USER_IDS_PARAM, "123, 122, 121, 212"), "12", false),
+      Arguments.of(
+        Pair(
+          USER_IDS_PARAM,
+          "160118738, 1823311338, 1422637466, 2125981185, 298261117, 1829486714, 463568019, 271166598"
+        ), "32667774", false
+      )
+    )
   }
 }
