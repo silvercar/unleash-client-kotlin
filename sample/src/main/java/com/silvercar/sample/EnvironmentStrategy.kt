@@ -7,7 +7,7 @@ class EnvironmentStrategy : Strategy {
     get() = NAME
 
   override fun isEnabled(parameters: Map<String, String>): Boolean {
-    return "qa" == parameters.get(PARAMETER) ?: ""
+    return "qa" == parameters[PARAMETER] ?: ""
   }
 
   companion object {
