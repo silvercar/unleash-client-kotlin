@@ -48,7 +48,7 @@ public class VariantUtilTest {
         Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v1.getName()));
-        assertThat(variant.getPayload().get(), is(v1.getPayload()));
+        assertThat(variant.getPayload(), is(v1.getPayload()));
         assertThat(variant.isEnabled(), is(true));
     }
 
@@ -124,7 +124,7 @@ public class VariantUtilTest {
         Variant variant = new VariantUtil().selectVariant(toggle, context, DISABLED_VARIANT);
 
         assertThat(variant.getName(), is(v3.getName()));
-        assertThat(variant.getPayload().get(), is(v3.getPayload()));
+        assertThat(variant.getPayload(), is(v3.getPayload()));
         assertThat(variant.isEnabled(), is(true));
     }
 
