@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import kotlin.jvm.functions.Function2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -277,7 +276,7 @@ public class UnleashTest {
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is("Chuck"));
-        assertThat(result.getPayload().map(Payload::getValue).get(), is("Norris"));
+        assertThat(result.getPayload().getValue(), is("Norris"));
         assertThat(result.isEnabled(), is(true));
     }
 
@@ -300,7 +299,7 @@ public class UnleashTest {
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is("disabled"));
-        assertThat(result.getPayload().map(Payload::getValue), is(Optional.empty()));
+        assertNull(result.getPayload().getValue());
         assertThat(result.isEnabled(), is(false));
     }
 
@@ -323,7 +322,7 @@ public class UnleashTest {
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is("en"));
-        assertThat(result.getPayload().map(Payload::getValue).get(), is("en"));
+        assertThat(result.getPayload().getValue(), is("en"));
         assertThat(result.isEnabled(), is(true));
     }
 
@@ -346,7 +345,7 @@ public class UnleashTest {
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is("to"));
-        assertThat(result.getPayload().map(Payload::getValue).get(), is("to"));
+        assertThat(result.getPayload().getValue(), is("to"));
         assertThat(result.isEnabled(), is(true));
     }
 
@@ -365,7 +364,7 @@ public class UnleashTest {
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is("disabled"));
-        assertThat(result.getPayload().map(Payload::getValue), is(Optional.empty()));
+        assertNull(result.getPayload().getValue());
         assertThat(result.isEnabled(), is(false));
     }
 
@@ -383,7 +382,7 @@ public class UnleashTest {
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is("Chuck"));
-        assertThat(result.getPayload().map(Payload::getValue).get(), is("Norris"));
+        assertThat(result.getPayload().getValue(), is("Norris"));
         assertThat(result.isEnabled(), is(true));
     }
 
@@ -408,7 +407,7 @@ public class UnleashTest {
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is("en"));
-        assertThat(result.getPayload().map(Payload::getValue).get(), is("en"));
+        assertThat(result.getPayload().getValue(), is("en"));
         assertThat(result.isEnabled(), is(true));
     }
 
@@ -433,7 +432,7 @@ public class UnleashTest {
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getName(), is("to"));
-        assertThat(result.getPayload().map(Payload::getValue).get(), is("to"));
+        assertThat(result.getPayload().getValue(), is("to"));
         assertThat(result.isEnabled(), is(true));
     }
 

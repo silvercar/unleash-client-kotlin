@@ -2,8 +2,6 @@ package com.silvercar.unleash
 
 import com.google.gson.annotations.SerializedName
 import com.silvercar.unleash.variant.Payload
-import java.util.Objects
-import java.util.Optional
 
 class Variant(
   val name: String,
@@ -17,8 +15,8 @@ class Variant(
     isEnabled: Boolean
   ) : this(name, Payload("string", payload), isEnabled)
 
-  fun getPayload(): Optional<Payload> {
-    return Optional.ofNullable(payload)
+  fun getPayload(): Payload? {
+    return payload
   }
 
   override fun toString(): String {
