@@ -4,7 +4,6 @@ import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
 
 class MetricsBucket internal constructor() {
   @Transient private val calendar: Calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"))
