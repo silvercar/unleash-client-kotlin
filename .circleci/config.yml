@@ -70,6 +70,29 @@ jobs:
       - store_artifacts:
           path: sample/build/outputs/apk/release/sample-release.apk
 
+  pgp-key:
+    docker:
+     - image: 377621159926.dkr.ecr.us-east-1.amazonaws.com/dvo/aws-ci
+    steps:
+     - run: |
+         $(aws secretsmanager get-secret-value --secret-id /global/maven_pgp_request) >> ~/.gnupg/privatekey.gpg
+     - persist_to_workspace:
+         root: ~
+         paths: .gnupg/privatekey.gpg
+
+  publish-unleash:
+    environment:
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - attach_workspace:
+         at: ~
+      - checkout
+      - download_cache_dependencies_unleash
+      - run: ./gradlew clean unleash:uploadArchives
+
 workflows:
   unleash-workflow:
     jobs:
@@ -83,3 +106,11 @@ workflows:
       - build-sample:
           requires:
             - detekt-sample
+      - publish-unleash:
+          requires:
+            - build-unleash
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
