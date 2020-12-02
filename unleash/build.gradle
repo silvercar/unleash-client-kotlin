@@ -29,5 +29,4 @@ dependencies {
     testImplementation 'org.apache.logging.log4j:log4j-core:2.11.2'
 }
 
-sourceCompatibility = "8"
-targetCompatibility = "8"
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
