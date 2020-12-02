@@ -70,19 +70,6 @@ jobs:
       - store_artifacts:
           path: sample/build/outputs/apk/release/sample-release.apk
 
-  pgp-key:
-    docker:
-     - image: 377621159926.dkr.ecr.us-east-1.amazonaws.com/dvo/aws-ci
-    steps:
-     - run: |
-        aws secretsmanager get-secret-value --secret-id service/sonatype-repository/maven-pgp-request | jq --raw-output '.SecretString'> /tmp/gpg_secret
-        cat /tmp/gpg_secret | jq -r .key | base64 -di > /tmp/private.key
-        gpg --batch --passphrase $(cat /tmp/gpg_secret | jq -r .passphrase) --import /tmp/private.key
-        tar cf /tmp/gnupg.tar ~/.gnupg/
-     - persist_to_workspace:
-         root: /tmp
-         paths: gnupg.tar
-
   publish-unleash:
     environment:
       _JAVA_OPTIONS: "-Xmx3g"
@@ -94,13 +81,18 @@ jobs:
          at: /tmp
       - checkout
       - download_cache_dependencies_unleash
-      - run: |
-        aws secretsmanager get-secret-value --secret-id service/sonatype-repository/maven-pgp-request | jq --raw-output '.SecretString'> /tmp/gpg_secret
-        cat /tmp/gpg_secret | jq -r .key | base64 -di > /tmp/private.key
-        export KEY_PASSPHRASE=$(cat /tmp/gpg_secret | jq -r .passphrase)
-        export SONATYPE_NEXUS_USERNAME=$(cat /tmp/gpg_secret | jq -r .nexus_username)
-        export SONATYPE_NEXUS_PASSWORD=$(cat /tmp/gpg_secret | jq -r .nexus_password)
-      - run: ./gradlew clean unleash:uploadArchives -psigning.password=$KEY_PASSPHRASE -psigning.secretKeyRingFile=/tmp/private.key -PSONATYPE_NEXUS_USERNAME=$SONATYPE_NEXUS_USERNAME -PSONATYPE_NEXUS_PASSWORD=$SONATYPE_NEXUS_PASSWORD
+      - run:
+          name: getting secrets
+          command: |
+            aws secretsmanager get-secret-value --secret-id service/sonatype-repository/maven-pgp-request | jq --raw-output '.SecretString'> /tmp/gpg_secret
+            cat /tmp/gpg_secret | jq -r .key | base64 -di > /tmp/private.key
+            export KEY_PASSPHRASE=$(cat /tmp/gpg_secret | jq -r .passphrase)
+            export SONATYPE_NEXUS_USERNAME=$(cat /tmp/gpg_secret | jq -r .nexus_username)
+            export SONATYPE_NEXUS_PASSWORD=$(cat /tmp/gpg_secret | jq -r .nexus_password)
+      - run:
+          name: uploading
+          command: |
+            ./gradlew clean unleash:uploadArchives -psigning.password=$KEY_PASSPHRASE -psigning.secretKeyRingFile=/tmp/private.key -PSONATYPE_NEXUS_USERNAME=$SONATYPE_NEXUS_USERNAME -PSONATYPE_NEXUS_PASSWORD=$SONATYPE_NEXUS_PASSWORD
 
 workflows:
   unleash-workflow:
